@@ -46,7 +46,7 @@ Idempotency is important in building a fault-tolerant HTTP API. An HTTP request 
 
 Let's say a client of an HTTP API wants to create (or update) a resource using a `POST` method. Since `POST` is NOT an idempotent method, calling it multiple times can result in duplication or wrong updates. Consider a scenario where the client sent a `POST` request to the server, but it got a timeout. Following questions arise :  Is the resource actually created (or updated)? Did the timeout occur during sending of the request, or when receiving of the response? Can the client safely retry the request, or does it need to figure out what happened in the first place? If `POST` had been an idempotent method, such questions may not arise. Client would safely retry a request until it actually gets a valid response from the server.
 
-For many use cases of HTTP API, duplicate resource is a severe problem from business perspective. For example, duplicate records for requests involving any kind of money transfer `MUST NOT` be allowed. In other cases, processing of duplicate webhook delivery is not expected.  
+For many use cases of HTTP APIs, duplicated resources are a severe problem from a business perspective. For example, duplicate records for requests involving any kind of money transfer `MUST NOT` be allowed. In other cases, processing of duplicate webhook delivery is not expected.  
 
 
 ##  Notational Conventions
