@@ -2,7 +2,7 @@
 coding: utf-8
 
 title: The Idempotency-Key HTTP Header Field
-docname: draft-ietf-httpapi-idempotency-key-header-00
+docname: draft-ietf-httpapi-idempotency-key-header-01
 category: std
 ipr: trust200902
 stand_alone: yes
@@ -21,6 +21,11 @@ author:
     email: sanjay.dalal@cal.berkeley.edu
     uri: https://github.com/sdatspun2
 
+  -    
+   ins: E. Wilde
+   name: Erik Wilde
+   email: erik.wilde@dret.net
+   uri: http://dret.net/netdret
 
 normative:
 
