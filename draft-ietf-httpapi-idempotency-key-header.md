@@ -325,19 +325,18 @@ Second example shows an idempotency-key header field with key value using some r
 
 --- back
 
-
-# Acknowledgments
-
-The authors would like to thank Mark Nottingham for his support for this Internet Draft. We would like to acknowledge that this draft is inspired by Idempotency related patterns described in API documentation of [PayPal](https://github.com/paypal/api-standards/blob/master/patterns.md#idempotency) and [Stripe](https://stripe.com/docs/idempotency) as well as Internet Draft on [POST Once Exactly](https://tools.ietf.org/html/draft-nottingham-http-poe-00) authored by Mark Nottingham.
-
-The authors take all responsibility for errors and omissions.
-
-# Appendix
-
-## Appendix A.  Imported ABNF
+# Imported ABNF
 
 The following core rules are included by reference, as defined in Appendix B.1 of {{!RFC5234}}: ALPHA (letters), CR (carriage return), CRLF (CR LF), CTL (controls), DIGIT (decimal 0-9), DQUOTE (double quote), HEXDIG (hexadecimal 0-9/A-F/a-f), LF (line feed), OCTET (any 8-bit sequence of data), SP (space), and VCHAR (any visible US-ASCII character).
 
 The rules below are defined in {{!RFC7230}}:
 
      obs-text      = <obs-text, see [RFC7230], Section 3.2.6>
+
+# Acknowledgments
+{:numbered="false"}
+
+The authors would like to thank Mark Nottingham for his support for this Internet Draft. We would like to acknowledge that this draft is inspired by Idempotency related patterns described in API documentation of [PayPal](https://github.com/paypal/api-standards/blob/master/patterns.md#idempotency) and [Stripe](https://stripe.com/docs/idempotency) as well as Internet Draft on [POST Once Exactly](https://tools.ietf.org/html/draft-nottingham-http-poe-00) authored by Mark Nottingham.
+
+The authors take all responsibility for errors and omissions.
+
