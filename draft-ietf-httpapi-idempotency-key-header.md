@@ -92,7 +92,7 @@ Uniqueness of the key MUST be defined by the resource owner and MUST be implemen
 
 ## Idempotency Key Validity and Expiry
 
-The resource MAY enforce time based idempotency keys, thus, be able to purge or delete a key upon its expiry. The resource server SHOULD define such expiration policy and publish in related documentation.
+The resource MAY enforce time based idempotency keys, thus, be able to purge or delete a key upon its expiry. The resource server SHOULD define such expiration policy and publish it in the documentation.
 
 
 ## Idempotency Fingerprint
