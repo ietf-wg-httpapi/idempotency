@@ -129,15 +129,15 @@ For each request, server SHOULD
 
 ## Idempotency Enforcement Scenarios
 
-* First time request (idempotency key or fingerprint has not been seen)
+* First time request (idempotency key and fingerprint has not been seen)
 
   The resource server SHOULD process the request normally and respond with an appropriate response and status code.
 
-* Duplicate request (idempotency key or fingerprint has been seen)
+* Duplicate request (idempotency key and fingerprint has been seen)
 
   Retry
 
-  The request was retried after the original request completed. The resource server MUST respond with the result of the previously completed operation, success or an error.
+  The request was retried after the original request completed. The resource server SHOULD respond with the result of the previously completed operation, success or an error. See Error Scenarios for details on errors.
 
   Concurrent Request
 
@@ -164,8 +164,9 @@ If the request is retried, while the original request is still being processed, 
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 
-For other errors, the resource MUST return the appropriate status code and error message.
+Error scenarios above describe the processing status of an idempotent request by the resource server. Clients MUST correct the requests before performing a retry operation, or the the resource server MUST fail the request and return one of the above errors. 
 
+For other 4xx/5xx errors, such as 500,502,504,429, 401, 403, the client SHOULD act appropriately by following the documementation provided by the resource server.
 
 
 # IANA Considerations
