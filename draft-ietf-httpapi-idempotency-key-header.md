@@ -164,7 +164,7 @@ If the request is retried, while the original request is still being processed, 
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 
-Error scenarios above describe the processing status of an idempotent request by the resource server. Clients MUST correct the requests before performing a retry operation, or the the resource server MUST fail the request and return one of the above errors. 
+Error scenarios above describe the status of an idempotent request that fails with an error, after the resource server prcocesses the request. Clients MUST correct the requests before performing a retry operation, or the the resource server MUST fail the request and continue to return one of the above errors. 
 
 For other 4xx/5xx errors, such as 401, 403, 500, 502, 504, 429, or any other error code that is not listed here, the client SHOULD act appropriately by following the resource server's documentation.
 
