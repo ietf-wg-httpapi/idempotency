@@ -309,14 +309,15 @@ Organization: WebEngage
 This section is meant to inform developers, information providers,
 and users of known security concerns specific to the idempotency keys.
 
-When the resource server does not implement a strong idempotency key, such as an UUID or have appropriate controls to validate the idempotency key, it leads to various forms of security attacks. 
+When the resource server does not implement a strong idempotency key, such as an UUID or have appropriate controls to validate the idempotency key, there could be various forms of security attacks from malicious clients: 
 
-* When a resource server that does not have stricter enforcement on the format of the idempotency key, clients MAY send low entropy keys in requests. In absence of a stronger authorization merchanisms in the resource server, an attacker MAY try to fetch idempotent cache entries belonging to other clients.
-* When a resource server directly uses the idempotency key in the client request to perform a cache or persistent store look up in order to evaluate the idempotency condition (including the detection of duplicate requests), it leads to many forms of security attacks (e.g. injection attacks) if the resource server does not implement a stronger validation mechanism for the idempotency key.
+* When a resource server directly uses the idempotency key in the client request to perform a cache or persistent store look up in order to evaluate the idempotency condition (including the detection of duplicate requests), there could be many forms of security attacks (e.g. injection attacks) from malicious actors  if the resource server does not implement a stronger validation mechanism for the idempotency key.
+* When a resource server does not enforce stricter format for the idempotency key, clients MAY send low entropy keys in requests. In absence of a strong authorization merchanisms in the resource server, an attacker MAY try to fetch idempotent cache entries belonging to other clients.
 
-The specification thus recommends the following for an idempotency key implementation.
 
-* The resource server SHOULD always validate the key as per the published specification before processing any request.
+The specification thus recommends the following for an idempotency key implementation:
+
+* The resource server SHOULD always validate the key as per it's published specification before processing any request.
 * Regardless of the specification of the idempotency key, the resource server MAY generate a server side idempotency key. Such a mechanism helps both towards reducing any form of security attacks, through the idempotency key, and preventing key collisons.
 * If a resource server implements an idempotent resource cache, the resource server, before doing a cache lookup using the client-sent or server generated idempotency key, SHOULD perform appropriate authorization to prevent leaking of cache entries belonging to another client.
 
