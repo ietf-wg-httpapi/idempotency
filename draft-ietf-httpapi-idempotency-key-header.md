@@ -164,9 +164,9 @@ If the request is retried, while the original request is still being processed, 
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 
-Error scenarios above describe the status of an idempotent request that fails with an error, after the resource server prcocesses the request. Clients MUST correct the requests before performing a retry operation, or the the resource server MUST fail the request and continue to return one of the above errors. 
+Error scenarios above describe the status of failed idempotent requests, after the resource server prcocesses them. Clients MUST correct the requests before performing a retry operation, or the the resource server MUST fail the request and return one of the above errors. 
 
-For other 4xx/5xx errors, such as 401, 403, 500, 502, 504, 429, or any other error code that is not listed here, the client SHOULD act appropriately by following the resource server's documentation.
+For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any other HTTP error code that is not listed here, the client SHOULD act appropriately by following the resource server's documentation.
 
 
 # IANA Considerations
@@ -309,8 +309,16 @@ Organization: WebEngage
 This section is meant to inform developers, information providers,
 and users of known security concerns specific to the idempotency keys.
 
-For idempotent request handling, the resources MAY make use of the value in the idempotency key to look up a cache or a persistent store for duplicate requests matching the key. If the resource does not validate the value of the idempotency key prior to performing such a lookup, it MAY lead to various forms of security attacks and compromise. To avoid such situations, the resource SHOULD publish the expected format of the idempotency key, algorithm used to generate it and always validate the key value as per the published specification before processing any request.
+When the resource server does not implement a strong idempotency key, such as an UUID or have appropriate controls to validate the idempotency key, it leads to various forms of security attacks. 
 
+* When a resource server that does not have stricter enforcement on the format of the idempotency key, clients MAY send low entropy keys in requests. In absence of a stronger authorization merchanisms in the resource server, an attacker MAY try to fetch idempotent cache entries belonging to other clients.
+* When a resource server directly uses the idempotency key in the client request to perform a cache or persistent store look up in order to evaluate the idempotency condition (including the detection of duplicate requests), it leads to many forms of security attacks (e.g. injection attacks) if the resource server does not implement a stronger validation mechanism for the idempotency key.
+
+The specification thus recommends the following for an idempotency key implementation.
+
+* The resource server SHOULD always validate the key as per the published specification before processing any request.
+* Regardless of the specification of the idempotency key, the resource server MAY generate a server side idempotency key. Such a mechanism helps both towards reducing any form of security attacks, through the idempotency key, and preventing key collisons.
+* If a resource server implements an idempotent resource cache, the resource server, before doing a cache lookup using the client-sent or server generated idempotency key, SHOULD perform appropriate authorization to prevent leaking of cache entries belonging to another client.
 
 
 # Examples
