@@ -309,16 +309,16 @@ Organization: WebEngage
 This section is meant to inform developers, information providers,
 and users of known security concerns specific to the idempotency keys.
 
-Resource servers that do not implement  strong idempotency keys, such as UUIDs, or have appropriate controls to validate the idempotency keys, could be victim to various security attacks from malicious clients:
+Resource servers that do not implement  strong idempotency keys, such as UUIDs, or have appropriate controls to validate the idempotency keys, could be victim to various forms of security attacks from malicious clients:
 
-* When the resource server does not validate the idempotency key in the client request and performs a idempotent cache or persistent store lookup  to evaluate the idempotency condition, including the detection of duplicate requests, there can be security attacks, primarily in the form of injection, compromising the server.
-* When the resource server does not enforce a stricter format for the idempotency key and allows low entropy keys from clients, in absence of strong authorization mechanisms, an attacker MAY try to fetch idempotent cache entries belonging to other clients.
+* Injection attacks-When the resource server does not validate the idempotency key in the client request and performs a idempotent cache lookup, there can be security attacks (primarily in the form of injection), compromising the server.
+* Data leaks-When an idempotency implementation allows low entropy keys, attackers MAY determine other keys and use them to fetch existing idempotent cache entries, belonging to other clients.
 
 To prevent such situations, the specification recommends the following best practices for idempotency key implementation in the resource server.
 
+* Establish a fixed format for the idempotency key and publish the key’s specification.
 * Always validate the key as per its published specification before processing any request.
-* Regardless of the strength of an idempotency key, generate a server side idempotency key. This helps to both reduce any form of security attacks and prevent key collisons.
-*Always perform appropriate authorization before doing a cache lookup using the idempotency key to prevent leaking of cache entries belonging to another client.
+* On the resource server, implement a unique composite key as the idempotent cache lookup key. For example, a composite key MAY be implemented by combining the idempotency key sent by the client with other client specific attributes known only to the resource server.
 
 
 # Examples
