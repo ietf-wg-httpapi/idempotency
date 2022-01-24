@@ -312,7 +312,7 @@ and users of known security concerns specific to the idempotency keys.
 Resource servers that do not implement  strong idempotency keys, such as UUIDs, or have appropriate controls to validate the idempotency keys, could be victim to various security attacks from malicious clients:
 
 * When the resource server does not validate the idempotency key in the client request and performs a idempotent cache or persistent store lookup  to evaluate the idempotency condition, including the detection of duplicate requests, there can be security attacks, primarily in the form of injection, compromising the server.
-* When the resource server does not enforce a stricter format for the idempotency key and allows low entropy keys from clients, in absence of strong authorization mechanisms, an attacker MAY try to fetch idempotent cache entries belonging to other client.
+* When the resource server does not enforce a stricter format for the idempotency key and allows low entropy keys from clients, in absence of strong authorization mechanisms, an attacker MAY try to fetch idempotent cache entries belonging to other clients.
 
 To prevent such situations, the specification recommends the following best practices for idempotency key implementation in the resource server.
 
