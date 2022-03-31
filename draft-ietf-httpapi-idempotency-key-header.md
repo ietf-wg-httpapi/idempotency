@@ -174,27 +174,16 @@ For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any othe
 
 ## The Idempotency-Key HTTP Request Header Field
 
-The `Idempotency-Key` request header should be added to the permanent registry of message header fields (see {{!RFC3864}}), taking into account the guidelines given by HTTP/1.1 {{!RFC7231}}.
+The Idempotency-Key field name should be added to the "Hypertext Transfer Protocol (HTTP) Field Name Registry".
 
-    Header Field Name: Idempotency-Key
+Field Name:
+: Idempotency-Key
 
-    Applicable Protocol: Hypertext Transfer Protocol (HTTP)
+Status:
+: permanent
 
-    Status: Standard
-
-    Authors:
-            Jayadeba Jena
-            Email: jjena@paypal.com
-
-
-            Sanjay Dalal
-            Email: sanjay.dalal@cal.berkeley.edu
-
-    Change controller: IETF
-
-    Specification document: this specification,
-                Section 2 "The Idempotency-Key HTTP Request Header Field"
-
+Specification document:
+: This specification, Section 2
 
 
 # Implementation Status
