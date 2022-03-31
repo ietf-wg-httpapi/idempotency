@@ -2,11 +2,18 @@
 coding: utf-8
 
 title: The Idempotency-Key HTTP Header Field
-docname: draft-ietf-httpapi-idempotency-key-header-01
+docname: draft-ietf-httpapi-idempotency-key-header-latest
 category: std
 ipr: trust200902
 stand_alone: yes
 pi: [toc, tocindent, sortrefs, symrefs, strict, compact, comments, inline]
+
+venue:
+  group: HTTPAPI
+  type: Working Group
+  home: https://ietf-wg-httpapi.github.io/
+  mail: httpapi@ietf.org
+  repo: https://github.com/ietf-wg-httpapi/idempotency
 
 author:
   -
@@ -15,13 +22,13 @@ author:
     organization: PayPal, Inc.
     email: jjena@paypal.com
 
-  -        
+  -
     ins: S. Dalal
     name: Sanjay Dalal
     email: sanjay.dalal@cal.berkeley.edu
     uri: https://github.com/sdatspun2
 
-  -    
+  -
    ins: E. Wilde
    name: Erik Wilde
    email: erik.wilde@dret.net
@@ -46,12 +53,12 @@ Idempotency is important in building a fault-tolerant HTTP API. An HTTP request 
 
 Let's say a client of an HTTP API wants to create (or update) a resource using a `POST` method. Since `POST` is NOT an idempotent method, calling it multiple times can result in duplication or wrong updates. Consider a scenario where the client sent a `POST` request to the server, but it got a timeout. Following questions arise :  Is the resource actually created (or updated)? Did the timeout occur during sending of the request, or when receiving of the response? Can the client safely retry the request, or does it need to figure out what happened in the first place? If `POST` had been an idempotent method, such questions may not arise. Client would safely retry a request until it actually gets a valid response from the server.
 
-For many use cases of HTTP APIs, duplicated resources are a severe problem from a business perspective. For example, duplicate records for requests involving any kind of money transfer `MUST NOT` be allowed. In other cases, processing of duplicate webhook delivery is not expected.  
+For many use cases of HTTP APIs, duplicated resources are a severe problem from a business perspective. For example, duplicate records for requests involving any kind of money transfer `MUST NOT` be allowed. In other cases, processing of duplicate webhook delivery is not expected.
 
 
 ##  Notational Conventions
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all capitals, as shown here, and without quotes.
+{::boilerplate bcp14-tagged}
 
 This specification uses the Augmented Backus-Naur Form (ABNF) notation of {{!RFC5234}} and includes, by reference, the IMF-fixdate rule as defined in Section 7.1.1.1 of {{!RFC7231}}.
 
@@ -158,7 +165,7 @@ If the request is retried, while the original request is still being processed, 
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 
-Error scenarios above describe the status of failed idempotent requests, after the resource server prcocesses them. Clients MUST correct the requests before performing a retry operation, or the the resource server MUST fail the request and return one of the above errors. 
+Error scenarios above describe the status of failed idempotent requests, after the resource server prcocesses them. Clients MUST correct the requests before performing a retry operation, or the the resource server MUST fail the request and return one of the above errors.
 
 For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any other HTTP error code that is not listed here, the client SHOULD act appropriately by following the resource server's documentation.
 
@@ -167,27 +174,16 @@ For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any othe
 
 ## The Idempotency-Key HTTP Request Header Field
 
-The `Idempotency-Key` request header should be added to the permanent registry of message header fields (see {{!RFC3864}}), taking into account the guidelines given by HTTP/1.1 {{!RFC7231}}.
+The Idempotency-Key field name should be added to the "Hypertext Transfer Protocol (HTTP) Field Name Registry".
 
-    Header Field Name: Idempotency-Key
+Field Name:
+: Idempotency-Key
 
-    Applicable Protocol: Hypertext Transfer Protocol (HTTP)
+Status:
+: permanent
 
-    Status: Standard
-
-    Authors:
-            Jayadeba Jena
-            Email: jjena@paypal.com
-
-
-            Sanjay Dalal
-            Email: sanjay.dalal@cal.berkeley.edu
-
-    Change controller: IETF
-
-    Specification document: this specification,
-                Section 2 "The Idempotency-Key HTTP Request Header Field"
-
+Specification document:
+: This specification, Section 2
 
 
 # Implementation Status
