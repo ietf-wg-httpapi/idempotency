@@ -1,0 +1,7 @@
+<note title="Discussion Venues" removeInRFC="true">
+<t>Discussion of this document takes place on the
+    Building Blocks for HTTP APIs Working Group mailing list (httpapi@ietf.org),
+    which is archived at <eref target="https://mailarchive.ietf.org/arch/browse/httpapi/"/>.</t>
+<t>Source for this draft and an issue tracker can be found at
+    <eref target="https://github.com/mnot/idempotency"/>.</t>
+</note>

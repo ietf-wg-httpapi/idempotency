@@ -1,0 +1,3 @@
+# Automatically generated CODEOWNERS
+# Regenerate with `make update-codeowners`
+draft-ietf-httpapi-idempotency-key-header.md jjena@paypal.com sanjay.dalal@cal.berkeley.edu erik.wilde@dret.net
