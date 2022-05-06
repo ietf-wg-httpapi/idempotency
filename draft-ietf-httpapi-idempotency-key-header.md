@@ -19,8 +19,7 @@ author:
   -
     ins: J. Jena
     name: Jayadeba Jena
-    organization: PayPal, Inc.
-    email: jjena@paypal.com
+    email: jayadebaj@gmail.com
 
   -
     ins: S. Dalal
