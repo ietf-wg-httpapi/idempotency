@@ -1341,7 +1341,7 @@ The request was retried before the original request completed. The resource serv
         <h3 id="name-error-scenarios">
 <a href="#section-2.7" class="section-number selfRef">2.7. </a><a href="#name-error-scenarios" class="section-name selfRef">Error Scenarios</a>
         </h3>
-<p id="section-2.7-1">If the <code>Idempotency-Key</code> request header is missing for a documented idempotent operation requiring this header, the resource server <span class="bcp14">MUST</span> reply with an HTTP <code>400</code> status code with body containing a link pointing to relevant documentation. Alternately, using the HTTP header <code>Link</code>, the client can be informed about the error as shown below.<a href="#section-2.7-1" class="pilcrow">¶</a></p>
+<p id="section-2.7-1">If the <code>Idempotency-Key</code> request header is missing for a documented idempotent operation requiring this header, the resource server <span class="bcp14">SHOULD</span> reply with an HTTP <code>400</code> status code with body containing a link pointing to relevant documentation. Alternately, using the HTTP header <code>Link</code>, the client can be informed about the error as shown below.<a href="#section-2.7-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-2.7-2">
 <pre>
 HTTP/1.1 400 Bad Request
@@ -1349,7 +1349,7 @@ Link: &lt;https://developer.example.com/idempotency&gt;;
   rel="describedby"; type="text/html"
 </pre><a href="#section-2.7-2" class="pilcrow">¶</a>
 </div>
-<p id="section-2.7-3">If there is an attempt to reuse an idempotency key with a different request payload, the resource server <span class="bcp14">MUST</span> reply with a HTTP <code>422</code> status code with body containing a link pointing to relevant documentation. The status code <code>422</code> is defined in Section 11.2 of <span>[<a href="#RFC4918" class="xref">RFC4918</a>]</span>. The server can also inform the client by using the HTTP header <code>Link</code> as shown below.<a href="#section-2.7-3" class="pilcrow">¶</a></p>
+<p id="section-2.7-3">If there is an attempt to reuse an idempotency key with a different request payload, the resource server <span class="bcp14">SHOULD</span> reply with a HTTP <code>422</code> status code with body containing a link pointing to relevant documentation. The status code <code>422</code> is defined in Section 11.2 of <span>[<a href="#RFC4918" class="xref">RFC4918</a>]</span>. The server can also inform the client by using the HTTP header <code>Link</code> as shown below.<a href="#section-2.7-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-2.7-4">
 <pre>
 HTTP/1.1 422 Unprocessable Entity
@@ -1357,7 +1357,7 @@ Link: &lt;https://developer.example.com/idempotency&gt;;
 rel="describedby"; type="text/html"
 </pre><a href="#section-2.7-4" class="pilcrow">¶</a>
 </div>
-<p id="section-2.7-5">If the request is retried, while the original request is still being processed, the resource server <span class="bcp14">MUST</span> reply with an HTTP <code>409</code> status code with body containing a link or the HTTP header <code>Link</code> pointing to the relevant documentation.<a href="#section-2.7-5" class="pilcrow">¶</a></p>
+<p id="section-2.7-5">If the request is retried, while the original request is still being processed, the resource server <span class="bcp14">SHOULD</span> reply with an HTTP <code>409</code> status code with body containing a link or the HTTP header <code>Link</code> pointing to the relevant documentation.<a href="#section-2.7-5" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-2.7-6">
 <pre>
 HTTP/1.1 409 Conflict
@@ -1365,7 +1365,7 @@ Link: &lt;https://developer.example.com/idempotency&gt;;
 rel="describedby"; type="text/html"
 </pre><a href="#section-2.7-6" class="pilcrow">¶</a>
 </div>
-<p id="section-2.7-7">Error scenarios above describe the status of failed idempotent requests, after the resource server prcocesses them. Clients <span class="bcp14">MUST</span> correct the requests before performing a retry operation, or the the resource server <span class="bcp14">MUST</span> fail the request and return one of the above errors.<a href="#section-2.7-7" class="pilcrow">¶</a></p>
+<p id="section-2.7-7">Error scenarios above describe the status of failed idempotent requests after the resource server prcocesses them. Clients <span class="bcp14">MUST</span> correct the requests (with the execption of 409 where no correction is required) before performing a retry operation, or the the resource server <span class="bcp14">MUST</span> fail the request and return one of the above errors.<a href="#section-2.7-7" class="pilcrow">¶</a></p>
 <p id="section-2.7-8">For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any other HTTP error code that is not listed here, the client <span class="bcp14">SHOULD</span> act appropriately by following the resource server's documentation.<a href="#section-2.7-8" class="pilcrow">¶</a></p>
 </section>
 </div>
