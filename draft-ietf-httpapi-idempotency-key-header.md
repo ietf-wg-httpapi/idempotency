@@ -20,7 +20,7 @@ author:
     ins: J. Jena
     name: Jayadeba Jena
     organization: PayPal, Inc.
-    email: jjena@paypal.com
+    email: jayadebaj@gmail.com
 
   -
     ins: S. Dalal
@@ -147,25 +147,25 @@ For each request, server SHOULD
 
 ## Error Scenarios
 
-If the `Idempotency-Key` request header is missing for a documented idempotent operation requiring this header, the resource server MUST reply with an HTTP `400` status code with body containing a link pointing to relevant documentation. Alternately, using the HTTP header `Link`, the client can be informed about the error as shown below.
+If the `Idempotency-Key` request header is missing for a documented idempotent operation requiring this header, the resource server SHOULD reply with an HTTP `400` status code with body containing a link pointing to relevant documentation. Alternately, using the HTTP header `Link`, the client can be informed about the error as shown below.
 
     HTTP/1.1 400 Bad Request
     Link: <https://developer.example.com/idempotency>;
       rel="describedby"; type="text/html"
 
-If there is an attempt to reuse an idempotency key with a different request payload, the resource server MUST reply with a HTTP `422` status code with body containing a link pointing to relevant documentation. The status code `422` is defined in Section 11.2 of {{!RFC4918}}. The server can also inform the client by using the HTTP header `Link` as shown below.
+If there is an attempt to reuse an idempotency key with a different request payload, the resource server SHOULD reply with a HTTP `422` status code with body containing a link pointing to relevant documentation. The status code `422` is defined in Section 11.2 of {{!RFC4918}}. The server can also inform the client by using the HTTP header `Link` as shown below.
 
     HTTP/1.1 422 Unprocessable Entity
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 
-If the request is retried, while the original request is still being processed, the resource server MUST reply with an HTTP `409` status code with body containing a link or the HTTP header `Link` pointing to the relevant documentation.
+If the request is retried, while the original request is still being processed, the resource server SHOULD reply with an HTTP `409` status code with body containing a link or the HTTP header `Link` pointing to the relevant documentation.
 
     HTTP/1.1 409 Conflict
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 
-Error scenarios above describe the status of failed idempotent requests, after the resource server prcocesses them. Clients MUST correct the requests before performing a retry operation, or the the resource server MUST fail the request and return one of the above errors.
+Error scenarios above describe the status of failed idempotent requests after the resource server prcocesses them. Clients MUST correct the requests (with the execption of 409 where no correction is required) before performing a retry operation, or the the resource server MUST fail the request and return one of the above errors.
 
 For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any other HTTP error code that is not listed here, the client SHOULD act appropriately by following the resource server's documentation.
 
