@@ -5,9 +5,7 @@
 Network Working Group                                            J. Jena
 Internet-Draft                                                          
 Intended status: Standards Track                                S. Dalal
-Expires: 9 November 2022                                                
-                                                                E. Wilde
-                                                              8 May 2022
+Expires: 9 November 2022                                      8 May 2022
 
 
                  The Idempotency-Key HTTP Header Field
@@ -605,8 +603,3 @@ Authors' Addresses
    Sanjay Dalal
    Email: sanjay.dalal@cal.berkeley.edu
    URI:   https://github.com/sdatspun2
-
-
-   Erik Wilde
-   Email: erik.wilde@dret.net
-   URI:   http://dret.net/netdret
