@@ -5,9 +5,9 @@
 Network Working Group                                            J. Jena
 Internet-Draft                                              PayPal, Inc.
 Intended status: Standards Track                                S. Dalal
-Expires: 4 October 2022                                                 
+Expires: 9 November 2022                                                
                                                                 E. Wilde
-                                                            2 April 2022
+                                                              8 May 2022
 
 
                  The Idempotency-Key HTTP Header Field
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 October 2022.
+   This Internet-Draft will expire on 9 November 2022.
 
 Copyright Notice
 
@@ -254,8 +254,8 @@ Table of Contents
 2.7.  Error Scenarios
 
    If the Idempotency-Key request header is missing for a documented
-   idempotent operation requiring this header, the resource server MUST
-   reply with an HTTP 400 status code with body containing a link
+   idempotent operation requiring this header, the resource server
+   SHOULD reply with an HTTP 400 status code with body containing a link
    pointing to relevant documentation.  Alternately, using the HTTP
    header Link, the client can be informed about the error as shown
    below.
@@ -265,7 +265,7 @@ Table of Contents
      rel="describedby"; type="text/html"
 
    If there is an attempt to reuse an idempotency key with a different
-   request payload, the resource server MUST reply with a HTTP 422
+   request payload, the resource server SHOULD reply with a HTTP 422
    status code with body containing a link pointing to relevant
    documentation.  The status code 422 is defined in Section 11.2 of
    [RFC4918].  The server can also inform the client by using the HTTP
@@ -276,7 +276,7 @@ Table of Contents
    rel="describedby"; type="text/html"
 
    If the request is retried, while the original request is still being
-   processed, the resource server MUST reply with an HTTP 409 status
+   processed, the resource server SHOULD reply with an HTTP 409 status
    code with body containing a link or the HTTP header Link pointing to
    the relevant documentation.
 
@@ -285,10 +285,10 @@ Table of Contents
    rel="describedby"; type="text/html"
 
    Error scenarios above describe the status of failed idempotent
-   requests, after the resource server prcocesses them.  Clients MUST
-   correct the requests before performing a retry operation, or the the
-   resource server MUST fail the request and return one of the above
-   errors.
+   requests after the resource server prcocesses them.  Clients MUST
+   correct the requests (with the execption of 409 where no correction
+   is required) before performing a retry operation, or the the resource
+   server MUST fail the request and return one of the above errors.
 
    For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429,
    or any other HTTP error code that is not listed here, the client
@@ -600,7 +600,7 @@ Authors' Addresses
 
    Jayadeba Jena
    PayPal, Inc.
-   Email: jjena@paypal.com
+   Email: jayadebaj@gmail.com
 
 
    Sanjay Dalal
