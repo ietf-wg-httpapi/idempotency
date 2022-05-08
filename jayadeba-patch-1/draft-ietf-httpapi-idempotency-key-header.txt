@@ -3,11 +3,11 @@
 
 
 Network Working Group                                            J. Jena
-Internet-Draft                                              PayPal, Inc.
+Internet-Draft                                                          
 Intended status: Standards Track                                S. Dalal
-Expires: 7 November 2022                                                
+Expires: 9 November 2022                                                
                                                                 E. Wilde
-                                                              6 May 2022
+                                                              8 May 2022
 
 
                  The Idempotency-Key HTTP Header Field
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 November 2022.
+   This Internet-Draft will expire on 9 November 2022.
 
 Copyright Notice
 
@@ -599,7 +599,6 @@ Acknowledgments
 Authors' Addresses
 
    Jayadeba Jena
-   PayPal, Inc.
    Email: jayadebaj@gmail.com
 
 
