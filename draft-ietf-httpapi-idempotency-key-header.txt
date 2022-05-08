@@ -3,7 +3,7 @@
 
 
 Network Working Group                                            J. Jena
-Internet-Draft                                              PayPal, Inc.
+Internet-Draft                                                          
 Intended status: Standards Track                                S. Dalal
 Expires: 9 November 2022                                                
                                                                 E. Wilde
@@ -599,7 +599,6 @@ Acknowledgments
 Authors' Addresses
 
    Jayadeba Jena
-   PayPal, Inc.
    Email: jayadebaj@gmail.com
 
 
