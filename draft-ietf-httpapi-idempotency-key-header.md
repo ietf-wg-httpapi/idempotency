@@ -27,11 +27,6 @@ author:
     email: sanjay.dalal@cal.berkeley.edu
     uri: https://github.com/sdatspun2
 
-  -
-   ins: E. Wilde
-   name: Erik Wilde
-   email: erik.wilde@dret.net
-   uri: http://dret.net/netdret
 
 normative:
 
