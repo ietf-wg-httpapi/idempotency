@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-05-08T01:53:53.321828+00:00",
+  "timestamp": "2022-05-10T01:26:30.090483+00:00",
   "repo": "ietf-wg-httpapi/idempotency",
   "labels": [
     {
@@ -546,24 +546,26 @@
       "id": "PR_kwDOFqunqM43Y4_7",
       "title": "update my email id and incorporate some of the outstanding issues.",
       "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/13",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "jayadeba",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "update my organization association & email id",
       "createdAt": "2022-05-06T02:26:01Z",
-      "updatedAt": "2022-05-06T23:16:59Z",
+      "updatedAt": "2022-05-09T07:19:22Z",
       "baseRepository": "ietf-wg-httpapi/idempotency",
       "baseRefName": "main",
       "baseRefOid": "1bc0427e8aa5c24c6960b5ce4b555373a7d5efee",
       "headRepository": "ietf-wg-httpapi/idempotency",
       "headRefName": "jayadeba-patch-1",
       "headRefOid": "b17853d66534dea8af7d2409c6d2a960195f9b02",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2022-05-08T16:32:46Z",
+      "mergedAt": "2022-05-08T16:32:46Z",
+      "mergedBy": "sdatspun2",
+      "mergeCommit": {
+        "oid": "f8df545a213174d89cb3b0893b524374e294cc0b"
+      },
       "comments": [
         {
           "author": "jayadeba",
@@ -571,6 +573,85 @@
           "body": "@dret @sdatspun2 pls review and merge this PR. We can publish the draft-02 after that. ",
           "createdAt": "2022-05-06T03:23:35Z",
           "updatedAt": "2022-05-06T03:23:35Z"
+        },
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "looks like this one was merged already.",
+          "createdAt": "2022-05-09T07:19:21Z",
+          "updatedAt": "2022-05-09T07:19:21Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 14,
+      "id": "PR_kwDOFqunqM43doUi",
+      "title": "Corrected my org association",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/14",
+      "state": "MERGED",
+      "author": "jayadeba",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Corrected my org association",
+      "createdAt": "2022-05-08T16:51:11Z",
+      "updatedAt": "2022-05-09T07:18:47Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "f8df545a213174d89cb3b0893b524374e294cc0b",
+      "headRepository": "ietf-wg-httpapi/idempotency",
+      "headRefName": "jayadeba-patch-1",
+      "headRefOid": "2a836565555f17ed70964704ccf277fe176a00a3",
+      "closedAt": "2022-05-08T17:05:02Z",
+      "mergedAt": "2022-05-08T17:05:02Z",
+      "mergedBy": "sdatspun2",
+      "mergeCommit": {
+        "oid": "66e9bfccf07e48eda0e91b54ac21cad9e5dfde37"
+      },
+      "comments": [
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "looks like this one was merged already.",
+          "createdAt": "2022-05-09T07:18:47Z",
+          "updatedAt": "2022-05-09T07:18:47Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 15,
+      "id": "PR_kwDOFqunqM43dqvb",
+      "title": "draft01",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/15",
+      "state": "MERGED",
+      "author": "sdatspun2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "preparing for publishing.",
+      "createdAt": "2022-05-08T17:50:21Z",
+      "updatedAt": "2022-05-09T07:18:24Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "66e9bfccf07e48eda0e91b54ac21cad9e5dfde37",
+      "headRepository": "sdatspun2/idempotency",
+      "headRefName": "main",
+      "headRefOid": "a50a33854a21523fbcca60f226634fa8ae1d0350",
+      "closedAt": "2022-05-08T18:40:06Z",
+      "mergedAt": "2022-05-08T18:40:06Z",
+      "mergedBy": "jayadeba",
+      "mergeCommit": {
+        "oid": "6a20e0ff974370a0dc13c66c240fcfd3d84a83a8"
+      },
+      "comments": [
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "looks like this one was merged already.",
+          "createdAt": "2022-05-09T07:18:23Z",
+          "updatedAt": "2022-05-09T07:18:23Z"
         }
       ],
       "reviews": []
