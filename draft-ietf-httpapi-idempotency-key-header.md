@@ -141,19 +141,55 @@ For each request, server SHOULD
 
 ## Error Scenarios
 
-If the `Idempotency-Key` request header is missing for a documented idempotent operation requiring this header, the resource server SHOULD reply with an HTTP `400` status code with body containing a link pointing to relevant documentation. Alternately, using the HTTP header `Link`, the client can be informed about the error as shown below.
+If the `Idempotency-Key` request header is missing for a documented idempotent operation requiring this header, the resource server SHOULD reply with an HTTP `400` status code with body containing a link pointing to relevant documentation. Following examples shows an error response describing the problem using {{!RFC7807}}.
+
+    HTTP/1.1 400 Bad Request
+    Content-Type: application/problem+json
+    Content-Language: en
+    {
+      "type": "https://developer.example.com/idempotency",
+      "title": "Idempotency-Key is missing",
+      "detail": "This operation is idempotent and it requires correct usage of Idempotency Key.",
+    }
+
+Alternately, using the HTTP header `Link`, the client can be informed about the error as shown below.
 
     HTTP/1.1 400 Bad Request
     Link: <https://developer.example.com/idempotency>;
       rel="describedby"; type="text/html"
 
-If there is an attempt to reuse an idempotency key with a different request payload, the resource server SHOULD reply with a HTTP `422` status code with body containing a link pointing to relevant documentation. The status code `422` is defined in Section 11.2 of {{!RFC4918}}. The server can also inform the client by using the HTTP header `Link` as shown below.
+If there is an attempt to reuse an idempotency key with a different request payload, the resource server SHOULD reply with a HTTP `422` status code with body containing a link pointing to relevant documentation. The status code `422` is defined in Section 11.2 of {{!RFC4918}}.
+
+
+    HTTP/1.1 422 Unprocessable Entity
+    Content-Type: application/problem+json
+    Content-Language: en
+    {
+      "type": "https://developer.example.com/idempotency",
+      "title": "Idempotency-Key is already used",
+      "detail": "This operation is idempotent and it requires correct usage of Idempotency Key. Idempotency Key MUST not be reused across different payloads of this operation.",
+    }
+
+
+The server can also inform the client by using the HTTP header `Link` as shown below.
 
     HTTP/1.1 422 Unprocessable Entity
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 
-If the request is retried, while the original request is still being processed, the resource server SHOULD reply with an HTTP `409` status code with body containing a link or the HTTP header `Link` pointing to the relevant documentation.
+If the request is retried, while the original request is still being processed, the resource server SHOULD reply with an HTTP `409` status code with body containing problem description.
+
+
+    HTTP/1.1 409 Conflict
+    Content-Type: application/problem+json
+    Content-Language: en
+    {
+      "type": "https://developer.example.com/idempotency",
+      "title": "A request is outstanding for this Idempotency-Key",
+      "detail": "A request with the same Idempotency-Key for the same operation is being processed or is outstanding.",
+    }
+
+Or, alternately using the HTTP header `Link` pointing to the relevant documentation
 
     HTTP/1.1 409 Conflict
     Link: <https://developer.example.com/idempotency>;
