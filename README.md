@@ -2,16 +2,16 @@
 
 This is the working area for the IETF [HTTPAPI Working Group](https://datatracker.ietf.org/wg/httpapi/documents/) Internet-Draft, "The Idempotency-Key HTTP Header Field".
 
-* [Editor's Copy](https://mnot.github.io/idempotency/#go.draft-ietf-httpapi-idempotency-key-header.html)
+* [Editor's Copy](https://ietf-wg-httpapi.github.io/idempotency/draft-ietf-httpapi-idempotency-key-header.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header)
 * [Working Group Draft](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header)
-* [Compare Editor's Copy to Working Group Draft](https://mnot.github.io/idempotency/#go.draft-ietf-httpapi-idempotency-key-header.diff)
+* [Compare Editor's Copy to Working Group Draft](https://ietf-wg-httpapi.github.io/idempotency/#go.draft-ietf-httpapi-idempotency-key-header.diff)
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/mnot/idempotency/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/ietf-wg-httpapi/idempotency/blob/main/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.
