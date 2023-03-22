@@ -149,8 +149,8 @@ If the `Idempotency-Key` request header is missing for a documented idempotent o
     {
       "type": "https://developer.example.com/idempotency",
       "title": "Idempotency-Key is missing",
-      "detail": "This operation is idempotent and it requires correct usage of
-      Idempotency Key.",
+      "detail": "This operation is idempotent and it requires correct
+       usage of Idempotency Key.",
     }
 
 Alternately, using the HTTP header `Link`, the client can be informed about the error as shown below.
@@ -168,9 +168,9 @@ If there is an attempt to reuse an idempotency key with a different request payl
     {
       "type": "https://developer.example.com/idempotency",
       "title": "Idempotency-Key is already used",
-      "detail": "This operation is idempotent and it requires correct usage of
-      Idempotency Key. Idempotency Key MUST not be reused across different
-      payloads of this operation.",
+      "detail": "This operation is idempotent and it requires
+      correct usage of Idempotency Key. Idempotency Key MUST not be
+      reused across different payloads of this operation.",
     }
 
 
@@ -189,8 +189,8 @@ If the request is retried, while the original request is still being processed, 
     {
       "type": "https://developer.example.com/idempotency",
       "title": "A request is outstanding for this Idempotency-Key",
-      "detail": "A request with the same Idempotency-Key for the same operation
-      is being processed or is outstanding.",
+      "detail": "A request with the same Idempotency-Key for the
+      same operation is being processed or is outstanding.",
     }
 
 Or, alternately using the HTTP header `Link` pointing to the relevant documentation
@@ -199,7 +199,7 @@ Or, alternately using the HTTP header `Link` pointing to the relevant documentat
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 
-Error scenarios above describe the status of failed idempotent requests after the resource server prcocesses them. Clients MUST correct the requests (with the execption of 409 where no correction is required) before performing a retry operation, or the the resource server MUST fail the request and return one of the above errors.
+Error scenarios above describe the status of failed idempotent requests after the resource server prcocesses them. Clients MUST correct the requests (with the exception of 409 where no correction is required) before performing a retry operation, or the the resource server MUST fail the request and return one of the above errors.
 
 For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any other HTTP error code that is not listed here, the client SHOULD act appropriately by following the resource server's documentation.
 
