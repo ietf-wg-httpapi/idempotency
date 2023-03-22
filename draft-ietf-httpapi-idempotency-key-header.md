@@ -149,7 +149,8 @@ If the `Idempotency-Key` request header is missing for a documented idempotent o
     {
       "type": "https://developer.example.com/idempotency",
       "title": "Idempotency-Key is missing",
-      "detail": "This operation is idempotent and it requires correct usage of Idempotency Key.",
+      "detail": "This operation is idempotent and it requires correct usage of
+      Idempotency Key.",
     }
 
 Alternately, using the HTTP header `Link`, the client can be informed about the error as shown below.
@@ -167,7 +168,9 @@ If there is an attempt to reuse an idempotency key with a different request payl
     {
       "type": "https://developer.example.com/idempotency",
       "title": "Idempotency-Key is already used",
-      "detail": "This operation is idempotent and it requires correct usage of Idempotency Key. Idempotency Key MUST not be reused across different payloads of this operation.",
+      "detail": "This operation is idempotent and it requires correct usage of
+      Idempotency Key. Idempotency Key MUST not be reused across different
+      payloads of this operation.",
     }
 
 
@@ -186,7 +189,8 @@ If the request is retried, while the original request is still being processed, 
     {
       "type": "https://developer.example.com/idempotency",
       "title": "A request is outstanding for this Idempotency-Key",
-      "detail": "A request with the same Idempotency-Key for the same operation is being processed or is outstanding.",
+      "detail": "A request with the same Idempotency-Key for the same operation
+      is being processed or is outstanding.",
     }
 
 Or, alternately using the HTTP header `Link` pointing to the relevant documentation
