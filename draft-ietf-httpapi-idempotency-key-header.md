@@ -107,6 +107,8 @@ Client
 
 Clients of HTTP API requiring idempotency, SHOULD understand the idempotency related requirements as published by the server and use appropriate algorithm to generate idempotency keys.
 
+Clients MAY choose to send an Idempotency-Key field with any valid random sf-string to indicate the user's intent is to only perform this action once. Without a priori knowledge, a general client cannot assume the server will respect this request.
+
 For each request, client SHOULD
 
 * Send a unique idempotency key in the HTTP `Idempotency-Key` request header field.
