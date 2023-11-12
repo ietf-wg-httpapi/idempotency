@@ -41,7 +41,7 @@ The HTTP Idempotency-Key request header field can be used to carry idempotency k
 
 # Introduction
 
-Idempotence is the property of certain operations in mathematics and computer science whereby they can be applied multiple times without changing the result beyond the initial application. It does not matter if the operation is called only once, or 10s of times over. The result SHOULD be the same.
+Idempotence is the property of certain operations in mathematics and computer science whereby they can be applied multiple times without changing the result beyond the initial application. It does not matter if the operation is called only once, or 10s of times over.
 
 Idempotency is important in building a fault-tolerant HTTP API. An HTTP request method is considered `idempotent` if the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request. According to {{!RFC7231}}, HTTP methods `OPTIONS`, `HEAD`, `GET`, `PUT` and `DELETE` are idempotent while methods `POST` and `PATCH` are not.
 
@@ -164,7 +164,7 @@ Alternately, using the HTTP header `Link`, the client can be informed about the 
 If there is an attempt to reuse an idempotency key with a different request payload, the resource server SHOULD reply with a HTTP `422` status code with body containing a link pointing to relevant documentation. The status code `422` is defined in Section 11.2 of {{!RFC4918}}.
 
 
-    HTTP/1.1 422 Unprocessable Entity
+    HTTP/1.1 422 Unprocessable Content
     Content-Type: application/problem+json
     Content-Language: en
     {
@@ -178,7 +178,7 @@ If there is an attempt to reuse an idempotency key with a different request payl
 
 The server can also inform the client by using the HTTP header `Link` as shown below.
 
-    HTTP/1.1 422 Unprocessable Entity
+    HTTP/1.1 422 Unprocessable Content
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 
