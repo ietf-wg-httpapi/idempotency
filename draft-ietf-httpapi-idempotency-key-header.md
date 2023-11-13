@@ -138,7 +138,7 @@ For each request, server SHOULD
 
   Concurrent Request
 
-  The request was retried before the original request completed. The resource server MUST respond with a resource conflict error. See Error Scenarios for details.
+  The request was retried before the original request completed. The resource server SHOULD respond with a resource conflict error. See Error Scenarios for details.
 
 
 ## Error Scenarios
