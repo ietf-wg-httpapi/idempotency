@@ -1,0 +1,819 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2022-11-13T01:56:13.654568+00:00",
+  "repo": "ietf-wg-httpapi/idempotency",
+  "labels": [
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    }
+  ],
+  "issues": [
+    {
+      "number": 2,
+      "id": "MDU6SXNzdWU5Mzk5MDc3NDQ=",
+      "title": "feedback on draft-idempotency-header",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/2",
+      "state": "CLOSED",
+      "author": "olijaun",
+      "authorAssociation": "NONE",
+      "assignees": [
+        "jayadeba"
+      ],
+      "labels": [],
+      "body": "Hi\r\n\r\nIt's great to see this RFC. Thanks for your work! I have three points I'd like to discuss:\r\n\r\n1.  In 2.6 you write: \"Retry  The request was retried after the original request completed. The resource server MUST respond with the result of the previously completed operation, success or an error.\" This makes of course sense -- especially if you consider the \"mathematical definition\" of idempotence. However for my taste \"MUST\" is a bit too restricting. Technically all you need to know as a client is whether a request has been processed before or not. So from a technical perspective it is sufficient if a service just returns an error code indicating that the request has been processed before. This might be much simpler to implement. Imagine that you have an application where you only manage the \"current state\" of your data. If a POST request returns the newly created resource then you need to know what the state of this resource was when it was created. This is not possible in a simple CRUD-Application that only tracks the current state.\r\n2. In section 2.7 you write \"If there is an attempt to reuse an idempotency key with a different request payload, the resource server MUST reply with a \"HTTP\" \"422\" status code with body containing a link pointing to relevant documentation.\" I think this is too restrictive. We often only check the Idempotency-Key and not the payload. Why? It is the responsibility of the client to make sure that it always sends the same payload for a given Idempotency-Key. It is sufficient if the backend only checks whether the given Idempotency-Key has been processed. It might of course be helpful for a client if the backend does perform such a check but it is not really required technically. Of course you would have to document the exact behavior so that clients know exactly what to expect. But the same is the case for the \"expiration policy\" you are mentioning in the RFC.\r\n3. As you may have noticed my mother tongue is not English (it is Swiss German). I looked-up the term \"Idempotency\" in my favorite dictionary (dict.leo.org) and it does not exist. However there exists the term \"Idempotence\". Also in the Introduction you say that \"Idempotence is the property of certain operations in mathematics\". So\u2026 why Idempotency-Key and not Idempotence-Key? I'm of course completely unqualified for this kind of question \ud83d\ude0a Just a thought\u2026\r\n\r\nThanks and kind regards\r\nOliver Jaun\r\n",
+      "createdAt": "2021-07-08T14:15:39Z",
+      "updatedAt": "2022-05-06T02:28:51Z",
+      "closedAt": "2022-05-06T02:28:51Z",
+      "comments": [
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@olijaun \r\n\r\nHappy to discuss these. Few comments below\r\n\r\n1- The write-up is more about returning the exact processing state of the idempotent request if it is already processed. A request is either successfully processed or failed. Successful processing means a 200 response with the current resource state and a failed response usually is a 4XX/5XX response with error details. A Retry mostly takes place for a scenario when the connection to the client is lost before the server returns (or writes) the completed processing state of the request, which means the server should always emit the completed processing state (the exact status of the request processing, with an exception for few recoverable errors). Pls note that this is a different scenario than the \"Request In Flight\" (i.e. Request processing is in progress and the server receives a duplicate request- In this case returning an error code (409) would be fine and the write-up describes this scenario).\r\n\r\n2-Idempotence Contract= Key + Fingerprint. Key is only used for lookup the payload in the idempotence cache (The request payload is then processed idempotently.). If only the key is used to check the idempotent condition, when a client reuses a previously used key for a new payload, the idempotent implementation would wrongly return the response status of the old request payload for which the key was previously used (wrong behavior) VS when both key + fingerprint are used as the contract, it is an error condition and the server responds with an errror, which is the correct behavior.  What are we suggesting here? Are we saying that we soften the language and use SHOULD instead of MUST?\r\n\r\n3- I'm good with `Idempotence-Key` if that is the right key name from English language standpoint but there are already widespread usage of `Idempotency-Key` in public APIs:-)\r\n",
+          "createdAt": "2021-07-09T03:56:12Z",
+          "updatedAt": "2021-07-13T17:27:32Z"
+        },
+        {
+          "author": "olijaun",
+          "authorAssociation": "NONE",
+          "body": "@jayadeba\r\n\r\nThanks for your answer. Just to be clear: I'm not talking about any mistakes in the spec. It's - as you say - about softening the language and use SHOULD instead of MUST. I could of course always use a proprietary header for my purpose. So it is up to you what \"softness\" you are willing to accept :-)\r\n\r\nI get your point and it absolutely makes sense. I also get the reason of the 409 and I wouldn't change anything about the 409-case. I'll give you an concrete example to explain my point: Imagine a simple \"Person-Resource\". You create a new person by posting a JSON:\r\n\r\n```\r\nPOST /persons\r\nIdempotency-Key: 1a2f0bd1-2a19-4b89-ae19-818562005d78\r\n\r\n{\r\n    \"name\": \"John\"\r\n}\r\n\r\n<client has a timeout (or has lost connection) and does NOT receive the following response:>\r\n\r\n200 OK\r\nContent-Type: application/json\r\n\r\n{\r\n    \"id\": \"de2e865b-d66c-4f88-878d-071c1514c10b\",\r\n    \"name\": \"John\"\r\n}\r\n```\r\n\r\nNow assume another client changes the \"name\" from \"John\" to \"Bob\" using PUT or PATCH.\r\n\r\nNow the client that previously had a timeout retries the request:\r\n\r\n```\r\nPOST /persons\r\nIdempotency-Key: 1a2f0bd1-2a19-4b89-ae19-818562005d78\r\n\r\n{\r\n    \"name\": \"John\"\r\n}\r\n\r\n200 OK\r\nContent-Type: application/json\r\n\r\n{\r\n    \"id\": \"de2e865b-d66c-4f88-878d-071c1514c10b\",\r\n    \"name\": \"John\" // the name in the database is now \"Bob\" but we have to return \"John\"\r\n}\r\n```\r\n\r\nWhat I understand from the RFC is that it MUST return \"John\" here although the name has been changed to \"Bob\" in the meantime.\r\n\r\nAs I said before: this makes completely sense but is not trivial to be implemented in a simple CRUD-Application that just stores the \"current state\" in the database.\r\n\r\nTherefore I suggest to introduce the possibility to alternatively respond with a 2xx-StatusCode other than 200 to indicate to the client that the request with the given Idempotency-Key has been (successfully) processed already (maybe a 204 with a link to \"idempotency\"?). This means of course a bit more complexity on the client side and a bit less complexity on the server side.\r\n\r\nRegarding 2): yes, I'm suggesting to soften the language and make the \"Fingerprint\" an optional part of the Idempotency-Contract.\r\n\r\n\r\nAs I said before: I see that this is somehow a contradiction to the term \"Idempotence\". My reasoning is purely pragmatic.\r\n\r\n",
+          "createdAt": "2021-07-09T08:36:30Z",
+          "updatedAt": "2021-07-09T08:55:27Z"
+        },
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@olijaun Good points. Thanks for the explanation.\r\n\r\n1-In section 2.6, it makes sense to soften the language from `MUST` to `MAY` or `SHOULD`. Receiving a stale resource representation is ok for many clients. If a client can't tolerate a stale representation, it can always fetch the latest resource representation by doing a subsequent GET. Event with a GET, on the server-side, in the distributed architecture, there's as well no guarantee that the client would receive a latest representation. Also returning the earlier processed response in case of a retry makes things simpler to implement, if someone wants to implement request idempotence as a common edge service at the API gateway layer. Any 2XX response is ok for this scenario (although, for resource creation POST operations, 201 with resource link or 200 with the complete resource representation are preferred)\r\n\r\n2-Regarding 2.7, IMO, making idempotency Fingerprint optional MAY weaken the idempotence contract & condition. But we are open to hearing more views on this and we can eventually decide the suitable language.\r\n\r\n\r\n\r\n",
+          "createdAt": "2021-07-13T17:26:33Z",
+          "updatedAt": "2021-07-13T17:34:35Z"
+        },
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@olijaun We have softened the language to `SHOULD` for the behavior that the server MAY respond with the latest resource  if the resource was modified by another client while the original client's request timed out.  So this issue is resolved.\r\n\r\nWe also made idenpotency key optional (`An idempotency fingerprint MAY be used in conjunction with an idempotency key to determine the uniqueness of a request.`).\r\n\r\nResolving the issue.",
+          "createdAt": "2022-05-06T02:28:51Z",
+          "updatedAt": "2022-05-06T02:28:51Z"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "MDU6SXNzdWU5NDYzNzE4OTk=",
+      "title": "Idempotency draft feedback",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/3",
+      "state": "CLOSED",
+      "author": "jwendel",
+      "authorAssociation": "NONE",
+      "assignees": [
+        "jayadeba"
+      ],
+      "labels": [],
+      "body": "(I'm writing this on my own, and the views here aren't necessarily that of Google, nor the team as a whole.  Also, I attempted to email this to the working group, but got some bounce notices, so I'm just posting it here as well).\r\n\r\nI work on the engineering team that defines and implements Google Standard Payments.\r\n\r\nDocument feedback:\r\n\r\n**2.2:**\r\nI really appreciate you calling out that idempotency-key + different-payload being bad, this is definitely something we have dealt with as well.\r\n\r\n**2.4 and 2.6:**\r\nIn 2.4 you state:\r\n> idempotency fingerprint MAY be used in conjunction with an idempotency key to determine the uniqueness of a request.\r\n\r\nBut then in 2.6, you state \"idempotency key or fingerprint\" for both initial and duplicate requests.  These statements seem to conflict with one another?  Or maybe it's just ambiguous wording?  My reading of section 2.6 says that a request could be rejected entirely based on the fingerprint, regardless of the idempotency-key.\r\n\r\n**2.6:**\r\n> The resource server MUST respond with the result of the previously completed operation, success or an error.\r\n\r\nAssuming \"error\" here means a 4xx or 5xx status code, this line is probably the largest difference between how Google Standard Payments (GSP) was designed and this spec.  In GSP, we effectively said that only HTTP 200 responses were allowed to be cached, and all other cases should be considered retriable until a HTTP 200 is returned.\r\n\r\nIf the resource server is having problems and starts returning 502 (Bad Gateway) response codes, should that be cached and replayed by the resource server?  In those cases, the resource server may not even be able to look into it's cache to respond properly.\r\n\r\nIf the client loses connection before the server responds, the client would then need to retry the request to find the result.  If it was some temporary error (say, 429 - Too Many Requests), the client would need to try again with a new idempotency-key, increasing the traffic to the server. (One retry with the original idempotency-key to get the cached result, then a second request to retry with a new idempotency-key).\r\n\r\nThis also seems like it could end up leading to a larger resource-server cache of idempotency-keys if clients have to keep generating new idempotency-keys for cases that could be retried in the same state.\r\n\r\nMy core issues here are: (1) I'm not sure this can be implemented as a \"MUST\" in the real world as defined today.  (2) I'm not sure it's the correct design decision.\r\n\r\n\r\n**4.1:**\r\nI saw that you linked to our capture implementation that talks about idempotency ( https://developers.google.com/standard-payments/payment-processor-service-api/v1/TopLevel/capture ).  We also have a more detailed reasoning about how/why we do idempotency that may interest you: https://developers.google.com/standard-payments/guides/connectivity/protocol-standards#request_idempotency.  \r\n\r\n**5:**\r\nWith clients generating the keys, it could lead to leaked data. I do like you recommending UUID (122 bits of entropy) should make it harder to attack. But if an implementation uses something with less entropy, an attacker could start trying to find existing cache entries belonging to another client and hope that they get played back (which would lead to a data leak).\r\n\r\n**Overall:**\r\nI really appreciate this spec being written. Idempotency is a tough topic that we've seen companies either not implement at all, or do it poorly.  Trying to set a standard here for people to follow is laudable.\r\n\r\n**Background:**\r\nThis isn't feedback for the document, but more philosophy differences I wanted to state so you understand where I'm coming from.\r\n\r\nIn the payments space, we tend to be fairly paranoid about the payload of our data.  In GSP, we pushed for all payloads to be PGP or JWE encrypted and signed.  This allows for using a HTTP load-balancer that can terminate the HTTPS connection for us, then the application server can deal with the payload (preventing accidental data leakage at the loadbalancer).\r\n\r\nWe tend to think protocol agnostic as we use both GRPC and HTTP regularly at Google, so using HTTP Headers to drive behavior that we feel is core to a request is tying us to that specific protocol.  With that, separating the idempotency-key from the rest of the payload doesn't make sense to us. We also made our request_id to be dual-purpose of being a unique identifier (lookup ID) for an API request plus the idempotency key (though we landed there after having them separate).\r\n\r\nThanks,\r\n-James Wendel\r\n",
+      "createdAt": "2021-07-16T15:00:45Z",
+      "updatedAt": "2022-05-06T02:06:45Z",
+      "closedAt": "2022-05-06T02:06:45Z",
+      "comments": [
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@jwendel Thanks for the comments. Great points.\r\n\r\nRegarding 2.4, 2.6 , Are you saying that in 2.2., anyone can read the idempotency contract as \"idempotency key + Fingerprint\" so 2.6 should be using the word \"and\", instead of \"or\" so the sentence now becomes \"idempotency key and fingerprint\". \r\n>If this is what you meant then yes we can clear the confusion in the wordings.\r\n\r\nRegarding 2.6, on the server returning the previous processing status of the request, regardless of the outcome (2XX or 4XX/5XX), your call out is a fair point. That said, if you think of implementing the request idempotency as an edge level gateway function, you can return 502 even if the resource server is down with 502. The implementation on the provider side with an edge level service is simpler if we return the same status.  \r\n> But i agree that usage of \"SHOULD\" or \"MAY\" is better here than \"MUST\". We can change it.\r\n\r\nWith respect to 5;\r\nRegardless how the client generates the idempotency key, from security standpoint, you would make sure on the server side you generate a key to make it unique (as clients can always send key with less entropy so there are chances of collision and you make sure that the key is not guessable). For example, you can use something like say the client sent idempotency key + OAuth2 client Id/account_number (or some other unique caller identifier known only to the server)  + capability URI , as the key on the server side.\r\n\r\n> This is worth clarifying in the security section of the document\r\n\r\n\r\n\r\n",
+          "createdAt": "2021-07-16T19:10:51Z",
+          "updatedAt": "2021-07-16T19:10:51Z"
+        },
+        {
+          "author": "jwendel",
+          "authorAssociation": "NONE",
+          "body": "Sorry for the slow response, and thank you very much for the prompt response.\r\n\r\n**For 2.6:** I can just say from experience that I have seen various companies implement idempotency in many different places in the stack.  Some put it at the edge (almost near their load balances), while others do it deeper in application code.  This just leads to different behavior about the corner-cases of returning a response idempotently.  The point I was trying to make that is if you expect errors (especially 5xx errors) to be replayed idempotently, that seems to be forcing caching/replay of those to happen at some sort of lookup system outside of application/resource code (if a loadbalancer returns a 502 and the caching was implemented in application code, the application has no way to know to replay a 502).  I worry about specifying that 5xx errors must be idempotent limit implementations that could be used here.\r\n\r\nThe advantage of only being idempotent for only 2xx (and maybe 4xx errors) is that it opens it up for edge or application/resource code to implement the caching. \r\n\r\n**Re 5 (security)**: 100% agree that some secondary key is needed to go along with idempotency key.  OAuth2 (or something derived from it) can definitely be a good way to scope these.  I think I'm just asking to have section 5 of the draft include something about scoping of request caches beyond the client provided key.",
+          "createdAt": "2021-08-21T17:29:35Z",
+          "updatedAt": "2021-08-21T17:29:35Z"
+        },
+        {
+          "author": "jayadebaj",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@jwendel Sorry for the long delay. For 2.6, let me see how we can make it clear in the spec so that the temporary failure error codes (429, 500,502,503,504) are not scoped in the idempotency processing status. Wrt security, yes we can add recommendations to implement a server-side idempotency key.",
+          "createdAt": "2021-12-06T05:26:20Z",
+          "updatedAt": "2021-12-06T05:26:20Z"
+        },
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is resolved in the previous merge (added the text `For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any other HTTP error code that is not listed here, the client SHOULD act appropriately by following the resource server's documentation.` and added the security section as well to describe the construction of server side idempotency key). Resolving the issue.",
+          "createdAt": "2022-05-06T02:06:45Z",
+          "updatedAt": "2022-05-06T02:06:45Z"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "MDU6SXNzdWU5NTI2NDgwOTA=",
+      "title": "add appendix about relationship with conditional requests",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/4",
+      "state": "OPEN",
+      "author": "dret",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "jayadeba"
+      ],
+      "labels": [],
+      "body": "some of the design goals of the `Idempotency-Key` header field can also be achieved by using conditional requests as described in RFC 7232. https://blog.container-solutions.com/why-i-stopped-using-post is one example of how to turn create operations into an idempotent interaction without requiring a new header field. it could be useful to point out that alternative design option, and to also point out cases where this alternative design option cannot be used.",
+      "createdAt": "2021-07-26T08:32:19Z",
+      "updatedAt": "2022-11-07T13:42:01Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@dret Should this be in scope of this draft at all? This proposal is about how to implement an idempotent POST operation. It is not about describing other implementation alternatives to idempotent POST resource creation operations. What do you think?",
+          "createdAt": "2021-07-27T03:27:35Z",
+          "updatedAt": "2021-07-27T03:27:35Z"
+        },
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On 2021-07-27 05:27, jayadeba wrote:\n> @dret <https://github.com/dret> Should this be in scope of this draft at \n> all? This proposal is about how to implement an idempotent POST \n> operation. It is not about describing other implementation alternatives \n> to idempotent POST resource creation operations. What do you think?\n\nit would be informational, but could be useful info for people looking \nfor when to use which pattern. it definitely doesn't have to be part of \nthe spec, but personally, i always appreciate when specs provide a bit \nof context for what they do, and how it compares to achieving similar \ngoals in other standardized ways.\n",
+          "createdAt": "2021-07-27T06:11:22Z",
+          "updatedAt": "2021-07-27T06:11:22Z"
+        },
+        {
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed in 111. @dret where (which section) would you suggest we could include something like this. Should we refer https://datatracker.ietf.org/doc/html/draft-nottingham-http-poe-00 as well?",
+          "createdAt": "2021-07-27T22:41:59Z",
+          "updatedAt": "2021-07-27T22:57:04Z"
+        },
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On 2021-07-28 00:42, Sanjay Dalal wrote:\n> Discussed in 110. @dret <https://github.com/dret> where (which section) \n> would you suggest we could include something like this. Should we refer \n> https://datatracker.ietf.org/doc/html/draft-nottingham-http-poe-00 \n> <https://datatracker.ietf.org/doc/html/draft-nottingham-http-poe-00> as \n> well?\n\nall of this probably should go to appendices. @mnot's draft may be less \nimportant because it never went anywhere. but conditional requests are \nin current RFCs and discussing the relationship there could be helpful \nfor readers of the idempotency-key spec.\n",
+          "createdAt": "2021-07-28T06:48:49Z",
+          "updatedAt": "2021-07-28T06:48:49Z"
+        },
+        {
+          "author": "asbjornu",
+          "authorAssociation": "NONE",
+          "body": "I'd just like to give my +1 to the spec explaining its relationship with conditional requests more clearly. Especially for the example mentioned in https://github.com/ietf-wg-httpapi/idempotency/issues/2#issuecomment-877018110 I would expect the server to require an `If-Match` header and respond with `428 Precondition Required` instead of just seemingly allowing lost updates. While I agree that in lieu of a precondition requirement the given example may be correct, I hope to never encounter a server that behaves like that in real life. \ud83d\ude05 \r\n\r\nTo encourage servers not to behave like this, the spec should mention how such requests should be handled instead by referring to conditional requests.",
+          "createdAt": "2021-07-30T12:11:58Z",
+          "updatedAt": "2022-03-10T13:18:15Z"
+        },
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@dret I read the article above- it works when the client provides the resource id for the resource it is trying to create, but if a client can't provide the resource id, the URI semantics `PUT /persons` doesn't sound great. Do we still need to include this in the appendix of the draft?  Pls let me know, else we'll close this issue.",
+          "createdAt": "2022-05-06T03:21:22Z",
+          "updatedAt": "2022-05-06T03:22:09Z"
+        },
+        {
+          "author": "darrelmiller",
+          "authorAssociation": "NONE",
+          "body": "@dret Do you have an opinion here?",
+          "createdAt": "2022-11-06T22:37:54Z",
+          "updatedAt": "2022-11-06T22:37:54Z"
+        },
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On 2022-11-06 14:38, Darrel wrote:\n> @dret <https://github.com/dret> Do you have an opinion here?\n\nby now i am mostly leaning in the direction of not describing \nalternative approaches. it would be an interesting thing to do, but \nmaybe the spec itself is not the best place to do it.\n",
+          "createdAt": "2022-11-07T11:54:58Z",
+          "updatedAt": "2022-11-07T11:54:58Z"
+        },
+        {
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "thanks. should we close the issue then? we are ready to publish a new draft.",
+          "createdAt": "2022-11-07T13:42:01Z",
+          "updatedAt": "2022-11-07T13:42:01Z"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "MDU6SXNzdWU5NTM0MjE2MTc=",
+      "title": "How does this header compare with OASIS Repeatable Requests?",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/5",
+      "state": "CLOSED",
+      "author": "darrelmiller",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "OASIS has a specification for a header that performs the same function.\r\nhttps://docs.oasis-open.org/odata/repeatable-requests/v1.0/cs01/repeatable-requests-v1.0-cs01.html#_Toc45116383\r\n\r\nInterestingly, the OASIS spec has a couple of other features (Repeatability-First-Sent, Repeatability-Client-ID) that helps a server manage the set of idempotency keys that the server needs to keep track of.  It would be interesting to understand how current implementations of the Idemptotency-key addresses handle this same concern.\r\n\r\n\r\n",
+      "createdAt": "2021-07-27T01:44:17Z",
+      "updatedAt": "2022-03-19T22:22:59Z",
+      "closedAt": "2022-03-19T22:22:59Z",
+      "comments": [
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@darrelmiller Thanks for the pointer. This is good to know and definitely needs collaboration. We have also received a mail from the Author (Dr. Ralf Handl) of the OASIS draft to collaborate on this. \r\n\r\nInterestingly, the draft mentions using these headers even for idemepotent methods like PUT & DELETE as well.\r\n\r\nWe'll work on this with the OASIS authors.\r\n\r\nIssue is noted.",
+          "createdAt": "2021-07-27T03:11:08Z",
+          "updatedAt": "2021-07-27T03:11:08Z"
+        },
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On 2021-07-27 03:44, Darrel wrote:\n> OASIS has a specification for a header that performs the same function.\n> https://docs.oasis-open.org/odata/repeatable-requests/v1.0/cs01/repeatable-requests-v1.0-cs01.html#_Toc45116383 \n> <https://docs.oasis-open.org/odata/repeatable-requests/v1.0/cs01/repeatable-requests-v1.0-cs01.html#_Toc45116383>\n\nthat indeed was a very interesting spec to discover, i heard about it \nyesterday. for a quick overview of the header fields it defines, here's \nwhere it has been added to web concepts:\n\nhttps://webconcepts.info/specs/OASIS/standard/repeatable-requests-v1.0\n\n> Interestingly, the OASIS spec has a couple of other features \n> (Repeatability-First-Sent, Repeatability-Client-ID) that helps a server \n> manage the set of idempotency keys that the server needs to keep track \n> of. It would be interesting to understand how current implementations of \n> the Idemptotency-key addresses handle this same concern.\n\nit does indeed seem to be a bit more constrained than the current \nproposal for Idempotency-Key. Idempotency-Key has some text about \nexpiration, but no mechanisms for managing it:\n\nhttps://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header#section-2.3\n\nanother additional constraint is that the OASIS spec mandates supporting \ncertain types of keys: \"Servers MUST accommodate the 36-character \nhexadecimal case-insensitive encoding of a UUID (GUID).\" i am not quite \nsure what than means (is comparing keys in case-sensitive ways a \nfunction of a certain key syntax?), but it seems like another difference \nof the two specs.\n",
+          "createdAt": "2021-07-27T06:19:36Z",
+          "updatedAt": "2021-07-27T06:19:36Z"
+        },
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On 2021-07-27 05:11, jayadeba wrote:\n> @darrelmiller <https://github.com/darrelmiller> Thanks for the pointer. \n> This is good to know and definitely needs collaboration. We have also \n> received a mail from the Author (Dr. Ralf Handl) of the OASIS draft to \n> collaborate on this.\n\njust pointing it out: the OASIS spec is stable, the headers have been \nregistered by IANA, and the whole effort seems to be part of the general \nOData effort, even though it's explicitly mentioned as being usable \noutside of this framework as well:\n\nhttps://docs.oasis-open.org/odata/repeatable-requests/v1.0/cs01/repeatable-requests-v1.0-cs01.html#sec_IncorporationintoOData\n",
+          "createdAt": "2021-07-27T06:22:39Z",
+          "updatedAt": "2021-07-27T06:22:39Z"
+        },
+        {
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed in 111. Sought opinions of the WG re how to proceed.\r\n\r\nThere are 4 headers in that spec: Repeatability-Request-ID, Repeatability-First-Sent, Repeatability-Client-ID and Repeatability-Result. And repeatability is applicable to 2 methods (PUT, DELETE) that are supposed to be idempotent by the HTTP spec.\r\n\r\n\"Servers MAY support repeatability on POST, PUT, PATCH and DELETE\"",
+          "createdAt": "2021-07-27T22:56:30Z",
+          "updatedAt": "2021-07-27T22:56:48Z"
+        },
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On 2021-07-28 00:56, Sanjay Dalal wrote:\n> There are 4 headers in that spec: Repeatability-Request-ID, \n> Repeatability-First-Sent, Repeatability-Client-ID and \n> Repeatability-Result. And repeatability is applicable to 2 methods (PUT, \n> DELETE) that are supposed to be idempotent by the HTTP spec.\n> \"Servers MAY support repeatability on POST, PUT, PATCH and DELETE\"\n\nthis indeed is a curious statement. i sent an email to the OData \ncomments list asking for clarification what this means:\n\nhttps://lists.oasis-open.org/archives/odata-comment/202107/msg00000.html\n",
+          "createdAt": "2021-07-28T06:51:34Z",
+          "updatedAt": "2021-07-28T06:51:34Z"
+        },
+        {
+          "author": "darrelmiller",
+          "authorAssociation": "NONE",
+          "body": "I believe this issue has served its purpose to have a conversation around the two different specifications.  I think the OASIS specification defines an approach that while potentially offering more features, it puts some additional constraints on server implementations.  I think it is reasonable to expect that both the Repeatable Request approach and Idempotency Key approach will find use cases where one of them is the optimum choice.\r\n\r\nI'm going to close this issue.  Feel free to re-open if further discussion is required. ",
+          "createdAt": "2022-03-19T22:22:59Z",
+          "updatedAt": "2022-03-19T22:22:59Z"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "id": "MDU6SXNzdWU5NTU1NDgxNjI=",
+      "title": "Use Structured Fields",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/6",
+      "state": "CLOSED",
+      "author": "mnot",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "While not a mandatory requirement for new fields, using SF has a number of benefits:\r\n\r\n- Well-defined parsing and serialisation algorithms\r\n- Corresponding reduction of interop and security issues\r\n- Existing implementation support\r\n- Possibility of more efficient serialisation support (i.e., binary HTTP headers)\r\n\r\nhttps://httpwg.org/specs/rfc8941.html",
+      "createdAt": "2021-07-29T07:31:39Z",
+      "updatedAt": "2022-01-22T16:31:22Z",
+      "closedAt": "2022-01-22T16:31:22Z",
+      "comments": [
+        {
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this, PR is merged after @mnot comment is addressed.",
+          "createdAt": "2022-01-22T16:31:22Z",
+          "updatedAt": "2022-01-22T16:31:22Z"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOFqunqM4-zNI2",
+      "title": "Use RFC 7807",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/8",
+      "state": "CLOSED",
+      "author": "dret",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "sdatspun2"
+      ],
+      "labels": [],
+      "body": "the examples of errors use a pattern of using a `describedby` link in a `Link` header, and then (supposedly) using a human-readable error message. what about using RFC 7807 instead and using examples that use problem reports to indicate failure semantics in addition to the status code?",
+      "createdAt": "2021-11-15T12:28:31Z",
+      "updatedAt": "2022-10-03T23:05:49Z",
+      "closedAt": "2022-10-03T23:05:49Z",
+      "comments": [
+        {
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree. coming up in the next draft.",
+          "createdAt": "2022-02-07T14:32:14Z",
+          "updatedAt": "2022-03-01T15:19:17Z"
+        },
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@sdatspun2 should we close this issue if it is resolved?",
+          "createdAt": "2022-05-06T02:07:38Z",
+          "updatedAt": "2022-05-06T02:07:38Z"
+        },
+        {
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@dret closing this issue. Let me know if not addressed with my latest PR.",
+          "createdAt": "2022-10-03T23:05:49Z",
+          "updatedAt": "2022-10-03T23:05:49Z"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOFqunqM5DPS5J",
+      "title": "Considerations for concurrent requests",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/11",
+      "state": "CLOSED",
+      "author": "wolfgang42",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The draft says:\r\n\r\n> If the request is retried, while the original request is still being processed, the resource server MUST reply with an HTTP `409` status code[...]\r\n\r\nI'm wondering what the considerations were behind this requirement. In particular:\r\n\r\n* Why must this be a \"Conflict\" in particular rather than, say, \"423 Locked\"? (I'm probably just missing some subtlety of HTTP status codes here.)\r\n* What should a client do if they get this response back? The draft says \u201cClients MUST correct the requests before performing a retry operation,\u201d but I\u2019m not clear on what sort of correction would be expected here before retrying. (For example, I'm imagining a scenario where the client loses its connection to the reverse proxy, but the backend is still busy processing the request. When the client retries, they might get 409 if the server hasn't happened to finish the original request yet.)\r\n* Why MUST the server detect this condition specially, rather than treating it as a replay? Are there some special considerations that are involved in concurrent requests? In particular I'm thinking of:\r\n  * A single-threaded server, which may not even have a way of detecting concurrent requests without special handling.\r\n  * A server which processes write requests in a queue, or uses a database with serializable transactions. In such cases concurrent requests would be idempotent, but the concurrency would not be detected without extra checks.\r\n  \r\n  In either case the concurrency would not seem at first glance to pose any problems; is there a scenario here that I'm missing?\r\n\r\nThanks for your work on this spec, it looks very promising so far.",
+      "createdAt": "2022-02-09T05:49:02Z",
+      "updatedAt": "2022-05-06T16:24:58Z",
+      "closedAt": "2022-05-06T03:03:42Z",
+      "comments": [
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On 2022-02-09 06:49, Wolfgang Faust wrote:\n> I'm wondering what the considerations were behind this requirement. In \n> particular:\n\ni want to give a bit of a meta-answer here. \nhttps://www.youtube.com/watch?v=_trZ4yQlp8M is where jay and i recently \ntalked about the bigger picture. jay (who started the draft) has strong \nopinions on frameworks that help teams to become more productive. and i \nagree with everything he says. but:\n\nmy reading of the draft so far is that we can relax it a fair bit. the \ngeneral mechanics should still be supported, but the draft could be less \nprescriptive in how protocols using this draft pick particular ways how \nto use status codes or deal with responses, for example.\n\ni will have a chat with jay about this. it has been my goal for a while \nnow to generally \"relax\" the language in the draft and make it more \nfocused on the mechanism, and less on the protocol that uses this \nmechanism. in my mind, that would make it a more valuable building block \nwith higher potential for reuse. let's see what jay thinks, but that's \nmy general thought process regarding your questions (and my apologies \nfor giving this high-response).\n\n-- \nerik wilde | ***@***.*** |\n            | http://dret.net/netdret    |\n            | http://twitter.com/dret    |\n",
+          "createdAt": "2022-02-10T07:16:54Z",
+          "updatedAt": "2022-02-10T07:16:54Z"
+        },
+        {
+          "author": "LukeMathWalker",
+          "authorAssociation": "NONE",
+          "body": "I was reading through the draft and I wondered: wouldn't \"waiting\", on the server-side, be an acceptable strategy to deal with concurrent requests?  I.e. wait until the lock is released and then return the same saved response.\r\n\r\nThis would provide better ergonomics when there is an expectation that clients might not be sophisticated enough to handle a different status code (e.g. 409) gracefully. ",
+          "createdAt": "2022-03-15T13:36:49Z",
+          "updatedAt": "2022-03-15T13:36:49Z"
+        },
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@LukeMathWalker waiting is an expensive strategy:-) That said, If you implement wait approach (which is a subjective server side implementation) you would be returning a 2XX code and it is ok as per the spec.",
+          "createdAt": "2022-05-06T02:41:06Z",
+          "updatedAt": "2022-05-06T02:41:06Z"
+        },
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@wolfgang42 @dret thanks for the discussion. I softened the language on specific error codes from `MUST` to `SHOULD` and removed the need of client correcting the request for 409 (good catch-thank you) in the PR- https://github.com/ietf-wg-httpapi/idempotency/pull/13/files#diff-63f88e5bb8aa74d91f2757586789b64a30958730c720c7850b542867eb4297db. I'll be resolving/closing this issue",
+          "createdAt": "2022-05-06T03:03:42Z",
+          "updatedAt": "2022-05-06T03:03:42Z"
+        },
+        {
+          "author": "LukeMathWalker",
+          "authorAssociation": "NONE",
+          "body": "@jayadeba: waiting is definitely expensive. It is not always a suitable strategy, but it does offer a good client-side experience when affordable.",
+          "createdAt": "2022-05-06T16:24:58Z",
+          "updatedAt": "2022-05-06T16:24:58Z"
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "id": "I_kwDOFqunqM5Lhxjd",
+      "title": "Change registration registry for the header field",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/16",
+      "state": "CLOSED",
+      "author": "dret",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "dret"
+      ],
+      "labels": [],
+      "body": "The current draft still requests publication in the IANA message field registry. There now is a specific registry for HTTP fields, and the registration request should be changed to that registry.",
+      "createdAt": "2022-06-10T07:02:43Z",
+      "updatedAt": "2022-11-07T13:40:48Z",
+      "closedAt": "2022-11-07T13:40:48Z",
+      "comments": [
+        {
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is fixed by @mnot's commit https://github.com/ietf-wg-httpapi/idempotency/commit/2dac6e5ec3fae594afce85228f07524b54a53582. Closing.",
+          "createdAt": "2022-11-07T13:40:47Z",
+          "updatedAt": "2022-11-07T13:40:47Z"
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "id": "I_kwDOFqunqM5WJSGQ",
+      "title": "Examples have extremely long lines",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/19",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "This is a problem for our format.  Please try to keep examples to 69 columns (or 72 in a pinch).  These examples are free-form strings in JSON, so they can probably just be wrapped.",
+      "createdAt": "2022-11-11T10:31:31Z",
+      "updatedAt": "2022-11-11T10:31:31Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 20,
+      "id": "I_kwDOFqunqM5WJTEg",
+      "title": "Binary Structured Fields",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/issues/20",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Consider using a binary value rather than a string.  This might not allow higher entropy density, as binary structured fields limit density, but the difference is tiny.\r\n\r\nNote: If you are using UUIDs - as people seem to like to do - binary UUIDs expressed in a binary structured field will be smaller than the usual string representation.",
+      "createdAt": "2022-11-11T10:35:04Z",
+      "updatedAt": "2022-11-11T10:35:04Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
+  "pulls": [
+    {
+      "number": 1,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjgzMzYyODcz",
+      "title": "Cleanup appendix structure",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/1",
+      "state": "MERGED",
+      "author": "reschke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Titles, numbering, ordering",
+      "createdAt": "2021-07-05T05:08:04Z",
+      "updatedAt": "2021-07-08T13:18:20Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "4bdcd9e9c1b62bbf8b2c66d7d477740593e2e06e",
+      "headRepository": "reschke/idempotency",
+      "headRefName": "patch-1",
+      "headRefOid": "7965b26925b2d60840a1985a723fda31e638fe9b",
+      "closedAt": "2021-07-08T13:18:08Z",
+      "mergedAt": "2021-07-08T13:18:08Z",
+      "mergedBy": "sdatspun2",
+      "mergeCommit": {
+        "oid": "ad221b5ea86c90843a727dac79e49bdd85707969"
+      },
+      "comments": [
+        {
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks @reschke ",
+          "createdAt": "2021-07-08T13:18:20Z",
+          "updatedAt": "2021-07-08T13:18:20Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 9,
+      "id": "PR_kwDOFqunqM4vaIKL",
+      "title": "Update draft-ietf-httpapi-idempotency-key-header.md",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/9",
+      "state": "MERGED",
+      "author": "jayadebaj",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "1- Addressed comments wrt 5XX codes being retriable\r\n2- Elaborated the security section to describe security issues relating to the idempotency key",
+      "createdAt": "2021-12-05T21:43:04Z",
+      "updatedAt": "2022-01-31T13:55:48Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "cdcc9ea08cb7d17f1594641ed08a18d6bf762b74",
+      "headRepository": "jayadebaj/idempotency",
+      "headRefName": "patch-1",
+      "headRefOid": "677d97b8ad165d4e91341ca329c8bbbdc49e81a1",
+      "closedAt": "2022-01-31T13:55:48Z",
+      "mergedAt": "2022-01-31T13:55:48Z",
+      "mergedBy": "sdatspun2",
+      "mergeCommit": {
+        "oid": "06bf6293e468a6a8f974dd93f69476d1cfdfd6a9"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOFqunqM4yIgTB",
+          "commit": {
+            "abbreviatedOid": "5ad4b92"
+          },
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-12-28T20:45:21Z",
+          "updatedAt": "2021-12-28T20:49:04Z",
+          "comments": [
+            {
+              "originalPosition": 43,
+              "body": "server side idempotency key, did you mean fingerprint? if not, this concept is not introduced before.",
+              "createdAt": "2021-12-28T20:45:21Z",
+              "updatedAt": "2021-12-28T20:49:04Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "other clients.",
+              "createdAt": "2021-12-28T20:45:41Z",
+              "updatedAt": "2021-12-28T20:49:04Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "id": "PR_kwDOFqunqM4wd3oZ",
+      "title": "uses structured field issue #6",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/10",
+      "state": "MERGED",
+      "author": "sdatspun2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "@mnot pls review",
+      "createdAt": "2022-01-03T13:11:21Z",
+      "updatedAt": "2022-01-22T16:28:47Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "cdcc9ea08cb7d17f1594641ed08a18d6bf762b74",
+      "headRepository": "sdatspun2/idempotency",
+      "headRefName": "main",
+      "headRefOid": "979fca42e2082fae3de3a00c5466da83640327e8",
+      "closedAt": "2022-01-22T16:28:47Z",
+      "mergedAt": "2022-01-22T16:28:47Z",
+      "mergedBy": "sdatspun2",
+      "mergeCommit": {
+        "oid": "44b6cffe6dcb5e080e4ccf1eb727c7dc3fccf13f"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOFqunqM4ygjbC",
+          "commit": {
+            "abbreviatedOid": "e531eaf"
+          },
+          "author": "mnot",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T05:45:33Z",
+          "updatedAt": "2022-01-10T05:45:33Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "You don't need to repeat all of this - just reference `sf-string` from the sh spec",
+              "createdAt": "2022-01-10T05:45:33Z",
+              "updatedAt": "2022-01-10T05:45:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOFqunqM4yidOq",
+          "commit": {
+            "abbreviatedOid": "979fca4"
+          },
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:32:48Z",
+          "updatedAt": "2022-01-10T14:32:48Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "Done.",
+              "createdAt": "2022-01-10T14:32:48Z",
+              "updatedAt": "2022-01-10T14:32:48Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOFqunqM41Xg8r",
+      "title": "Mechanical updates",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/12",
+      "state": "MERGED",
+      "author": "mnot",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "This:\r\n\r\n- Gets the editors' draft generated by the template using GitHub actions (was never set up)\r\n- Fixes up some document metadata\r\n- Updates the IANA considerations section to fit current practice",
+      "createdAt": "2022-03-31T04:31:13Z",
+      "updatedAt": "2022-04-02T02:02:40Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "06bf6293e468a6a8f974dd93f69476d1cfdfd6a9",
+      "headRepository": "mnot/idempotency",
+      "headRefName": "fixup",
+      "headRefOid": "2dac6e5ec3fae594afce85228f07524b54a53582",
+      "closedAt": "2022-03-31T07:49:41Z",
+      "mergedAt": "2022-03-31T07:49:40Z",
+      "mergedBy": "dret",
+      "mergeCommit": {
+        "oid": "1bc0427e8aa5c24c6960b5ce4b555373a7d5efee"
+      },
+      "comments": [
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "looks like this one didn't work as expected, @mnot: https://github.com/ietf-wg-httpapi/idempotency/actions/runs/2069657214",
+          "createdAt": "2022-03-31T07:52:47Z",
+          "updatedAt": "2022-03-31T07:52:47Z"
+        },
+        {
+          "author": "mnot",
+          "authorAssociation": "MEMBER",
+          "body": "Fixed.",
+          "createdAt": "2022-04-02T02:02:40Z",
+          "updatedAt": "2022-04-02T02:02:40Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 13,
+      "id": "PR_kwDOFqunqM43Y4_7",
+      "title": "update my email id and incorporate some of the outstanding issues.",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/13",
+      "state": "MERGED",
+      "author": "jayadeba",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "update my organization association & email id",
+      "createdAt": "2022-05-06T02:26:01Z",
+      "updatedAt": "2022-05-09T07:19:22Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "1bc0427e8aa5c24c6960b5ce4b555373a7d5efee",
+      "headRepository": "ietf-wg-httpapi/idempotency",
+      "headRefName": "jayadeba-patch-1",
+      "headRefOid": "b17853d66534dea8af7d2409c6d2a960195f9b02",
+      "closedAt": "2022-05-08T16:32:46Z",
+      "mergedAt": "2022-05-08T16:32:46Z",
+      "mergedBy": "sdatspun2",
+      "mergeCommit": {
+        "oid": "f8df545a213174d89cb3b0893b524374e294cc0b"
+      },
+      "comments": [
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@dret @sdatspun2 pls review and merge this PR. We can publish the draft-02 after that. ",
+          "createdAt": "2022-05-06T03:23:35Z",
+          "updatedAt": "2022-05-06T03:23:35Z"
+        },
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "looks like this one was merged already.",
+          "createdAt": "2022-05-09T07:19:21Z",
+          "updatedAt": "2022-05-09T07:19:21Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 14,
+      "id": "PR_kwDOFqunqM43doUi",
+      "title": "Corrected my org association",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/14",
+      "state": "MERGED",
+      "author": "jayadeba",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Corrected my org association",
+      "createdAt": "2022-05-08T16:51:11Z",
+      "updatedAt": "2022-05-09T07:18:47Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "f8df545a213174d89cb3b0893b524374e294cc0b",
+      "headRepository": "ietf-wg-httpapi/idempotency",
+      "headRefName": "jayadeba-patch-1",
+      "headRefOid": "2a836565555f17ed70964704ccf277fe176a00a3",
+      "closedAt": "2022-05-08T17:05:02Z",
+      "mergedAt": "2022-05-08T17:05:02Z",
+      "mergedBy": "sdatspun2",
+      "mergeCommit": {
+        "oid": "66e9bfccf07e48eda0e91b54ac21cad9e5dfde37"
+      },
+      "comments": [
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "looks like this one was merged already.",
+          "createdAt": "2022-05-09T07:18:47Z",
+          "updatedAt": "2022-05-09T07:18:47Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 15,
+      "id": "PR_kwDOFqunqM43dqvb",
+      "title": "draft01",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/15",
+      "state": "MERGED",
+      "author": "sdatspun2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "preparing for publishing.",
+      "createdAt": "2022-05-08T17:50:21Z",
+      "updatedAt": "2022-05-09T07:18:24Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "66e9bfccf07e48eda0e91b54ac21cad9e5dfde37",
+      "headRepository": "sdatspun2/idempotency",
+      "headRefName": "main",
+      "headRefOid": "a50a33854a21523fbcca60f226634fa8ae1d0350",
+      "closedAt": "2022-05-08T18:40:06Z",
+      "mergedAt": "2022-05-08T18:40:06Z",
+      "mergedBy": "jayadeba",
+      "mergeCommit": {
+        "oid": "6a20e0ff974370a0dc13c66c240fcfd3d84a83a8"
+      },
+      "comments": [
+        {
+          "author": "dret",
+          "authorAssociation": "COLLABORATOR",
+          "body": "looks like this one was merged already.",
+          "createdAt": "2022-05-09T07:18:23Z",
+          "updatedAt": "2022-05-09T07:18:23Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 17,
+      "id": "PR_kwDOFqunqM4_KNjW",
+      "title": "Draft 02 (wip)",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/17",
+      "state": "MERGED",
+      "author": "sdatspun2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Issue#8",
+      "createdAt": "2022-09-18T22:06:19Z",
+      "updatedAt": "2022-10-03T23:01:11Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "6a20e0ff974370a0dc13c66c240fcfd3d84a83a8",
+      "headRepository": "sdatspun2/idempotency",
+      "headRefName": "main",
+      "headRefOid": "6f1c78ca5d22a9ceebbc9a8ebc807e44d0526c33",
+      "closedAt": "2022-10-03T23:01:11Z",
+      "mergedAt": "2022-10-03T23:01:11Z",
+      "mergedBy": "jayadeba",
+      "mergeCommit": {
+        "oid": "62ee1f6679f7363036474b962a3f0671813510f0"
+      },
+      "comments": [
+        {
+          "author": "sdatspun2",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@dret @jayadeba pl review re issue#8",
+          "createdAt": "2022-09-18T22:07:06Z",
+          "updatedAt": "2022-09-18T22:07:06Z"
+        },
+        {
+          "author": "jayadeba",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Looks good",
+          "createdAt": "2022-10-03T23:01:06Z",
+          "updatedAt": "2022-10-03T23:01:06Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 18,
+      "id": "PR_kwDOFqunqM5CiSXk",
+      "title": "Draft02",
+      "url": "https://github.com/ietf-wg-httpapi/idempotency/pull/18",
+      "state": "MERGED",
+      "author": "sdatspun2",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Draft02 https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/",
+      "createdAt": "2022-11-09T15:30:52Z",
+      "updatedAt": "2022-11-09T16:46:01Z",
+      "baseRepository": "ietf-wg-httpapi/idempotency",
+      "baseRefName": "main",
+      "baseRefOid": "62ee1f6679f7363036474b962a3f0671813510f0",
+      "headRepository": "sdatspun2/idempotency",
+      "headRefName": "main",
+      "headRefOid": "8e7a68e27b6bb00d456af603061ecf431169ab16",
+      "closedAt": "2022-11-09T16:46:01Z",
+      "mergedAt": "2022-11-09T16:46:01Z",
+      "mergedBy": "jayadeba",
+      "mergeCommit": {
+        "oid": "d5a3af8fa98b40776521a37bfe695797f7d7456d"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
