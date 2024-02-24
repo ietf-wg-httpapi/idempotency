@@ -154,7 +154,7 @@ Alternately, using the HTTP header `Link`, the client can be informed about the 
       rel="describedby"; type="text/html"
 ~~~
 
-If there is an attempt to reuse an idempotency key with a different request payload, the resource SHOULD reply with a HTTP `422` status code with body containing a link pointing to relevant documentation. The status code `422` is defined in Section 11.2 of {{!RFC4918}}.
+If there is an attempt to reuse an idempotency key with a different request payload, the resource SHOULD reply with a HTTP `422` status code with body containing a link pointing to relevant documentation. The status code `422` is defined in Section 15.5.21 of {{!RFC9110}}.
 
 ~~~ http-message
     HTTP/1.1 422 Unprocessable Content
