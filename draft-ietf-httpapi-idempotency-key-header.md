@@ -199,7 +199,7 @@ Or, alternately using the HTTP header `Link` pointing to the relevant documentat
     rel="describedby"; type="text/html"
 ~~~
 
-Error scenarios above describe the status of failed idempotent requests after the resource prcocesses them. Clients MUST correct the requests (with the exception of 409 where no correction is required) before performing a retry operation, or the the resource MUST fail the request and return one of the above errors.
+Error scenarios above describe the status of failed idempotent requests after the resource prcocesses them. Clients MUST correct the requests (with the exception of 409 where no correction is required) before performing a retry operation, or the resource MUST fail the request and return one of the above errors.
 
 For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any other HTTP error code that is not listed here, the client SHOULD act appropriately by following the resource's documentation.
 
