@@ -157,7 +157,7 @@ Alternately, using the HTTP header `Link`, the client can be informed about the 
 If there is an attempt to reuse an idempotency key with a different request payload, the resource SHOULD reply with a HTTP `422` status code with body containing a link pointing to relevant documentation. The status code `422` is defined in Section 11.2 of {{!RFC4918}}.
 
 ~~~ http-message
-    HTTP/1.1 422 Unprocessable Content
+    HTTP/1.1 422 Unprocessable Entity
     Content-Type: application/problem+json
     Content-Language: en
     {
@@ -172,7 +172,7 @@ If there is an attempt to reuse an idempotency key with a different request payl
 The server can also inform the client by using the HTTP header `Link` as shown below.
 
 ~~~ http-message
-    HTTP/1.1 422 Unprocessable Content
+    HTTP/1.1 422 Unprocessable Entity
     Link: <https://developer.example.com/idempotency>;
     rel="describedby"; type="text/html"
 ~~~
