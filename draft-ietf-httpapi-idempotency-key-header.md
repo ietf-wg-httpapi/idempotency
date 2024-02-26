@@ -285,6 +285,11 @@ Organization: Django
 - Description: Django uses custom HTTP header named `HTTP_IDEMPOTENCY_KEY`
 - Reference:  https://pypi.org/project/django-idempotency-key
 
+Organization: Chargebee
+
+- Description: Chargebee uses custom HTTP header named `chargebee-idempotency-key`
+- Reference: https://apidocs.chargebee.com/docs/api/idempotency
+
 Organization: Twilio
 
 - Description: Twilio uses custom HTTP header named `I-Twilio-Idempotency-Token` in webhooks
@@ -299,7 +304,6 @@ Organization: RazorPay
 
 - Description: RazorPay uses custom HTTP header named `X-Payout-Idempotency`
 - Reference: https://razorpay.com/docs/razorpayx/api/idempotency/
-
 
 Organization: OpenBanking
 
