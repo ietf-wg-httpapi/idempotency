@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>The Idempotency-Key HTTP Header Field</title>
+<meta content="Jayadeba Jena" name="author">
+<meta content="Sanjay Dalal" name="author">
+<meta content="
+       The HTTP Idempotency-Key request header field can be used to carry idempotency key in order to make non-idempotent HTTP methods such as  POST  or  PATCH  fault-tolerant. 
+    " name="description">
+<meta content="xml2rfc 3.21.0" name="generator">
+<meta content="draft-ietf-httpapi-idempotency-key-header-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.21.0
+    Python 3.12.3
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.0
+    intervaltree 3.1.0
+    Jinja2 3.1.4
+    lxml 4.9.4
+    platformdirs 4.2.2
+    pycountry 22.3.5
+    PyYAML 6.0.1
+    requests 2.31.0
+    setuptools 69.5.1
+    six 1.16.0
+    wcwidth 0.2.13
+-->
+<link href="draft-ietf-httpapi-idempotency-key-header.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Cabin Condensed", sans-serif;
+  font-weight: 600;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1#title {
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1#title, h1#rfcnum {
+  margin: 1.5em 0 0.2em;
+}
+h1#rfcnum + h1#title {
+  margin: 0.2em 0;
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+}
+#abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 16px;
+  line-height: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+/* font-family isn't space-separated, but =~ will have to do */
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+}
+:is(ol, ul) :is(ol, ul) {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  line-height: 1;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+  clear: left;
+  --indent: 3ch;
+  /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+}
+dl.olPercent {
+  --indent: 5ch;
+}
+dl > dt {
+  float: left;
+  margin-right: 2ch;
+  min-width: 8ch;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+dl > dd {
+  margin-bottom: .8em;
+  margin-left: var(--indent) !important; /* stupid element overrides */
+  min-height: 2ex;
+}
+dl.olPercent > dt {
+  min-width: calc(var(--indent) - 2ch);
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0;
+}
+:is(dl.compact, .dlCompact) > dd > :is(:first-child, .break:first-child + *) {
+  margin-top: 0;
+}
+:is(dl.compact, .dlCompact) > dd > :is(:last-child) {
+  margin-bottom: 0;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+}
+:is(dd, span).break {
+  display: none;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href].selfRef, .iref + a[href].internal {
+  color: var(--text-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines
+     note: this fails if these blocks take an entire line,
+     a different solution would be great */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+  pre, svg {
+    display: inline-block;
+    overflow-x: auto;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+table.left {
+  margin-right: auto;
+}
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+table caption {
+  margin: 0;
+  padding: 3px 0 3px 1em;
+}
+table p {
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+}
+a.pilcrow[href] { color: var(--pilcrow-weak); }
+a.pilcrow[href]:hover { text-decoration: none; }
+@media not print {
+  :hover > a.pilcrow {
+    opacity: 1;
+  }
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
+    background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+}
+.role {
+  font-variant: all-small-caps;
+}
+sub, sup {
+  line-height: 1;
+  font-size: 80%;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 15ch;
+}
+#identifiers dt {
+  width: var(--identifier-width);
+  min-width: var(--identifier-width);
+  clear: left;
+  float: left;
+  text-align: right;
+  margin-right: 1ch;
+}
+#identifiers dd {
+  margin: 0;
+  margin-left: calc(1em + var(--identifier-width)) !important;
+  min-width: 5em;
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+#toc nav ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+#toc nav li {
+  line-height: 1.3em;
+  margin: 2px 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+#toc a.xref {
+  white-space: normal;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 10ch;
+  margin-right: 1.5ch;
+}
+.references dt:target::before {
+  content: "⇒";
+  width: 15px;
+  margin: 0 10px 0 -25px;
+}
+.references dd {
+  margin-left: 12ch !important;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses > section {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #authors-addresses > section > h2 {
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+.rfcEditorRemove p:first-of-type {
+  font-style: italic;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc.active {
+      opacity: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 8px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active nav {
+    display: block;
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin-top: 2px;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  #toc nav > ul  {
+    margin-bottom: 2em;
+  }
+  #toc ul {
+    margin: 0 0 0 4px;
+    font-size: var(--small-font-size);
+  }
+  #toc ul :is(p, li) {
+    margin: 2px 0;
+    line-height: 22px;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre, .vcard {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  :is(h2, h3, h4, h5, h6)+*, dd {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+  .toplink {
+    display: none;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Changes introduced to fix issues found during implementation */
+
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin: 8px 0.5em 0;
+}
+
+/* Provide styling for table cell text alignment */
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 20em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
+  stroke: var(--text-color);
+}
+svg :is([stroke="white"], [stroke^="#fff"]) {
+  stroke: var(--background-color);
+}
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
+  fill: var(--text-color);
+}
+svg :is([fill="white"], [fill^="#fff"]) {
+  fill: var(--background-color);
+}
+</style>
+
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">The Idempotency-Key HTTP Header Field</td>
+<td class="right">June 2024</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Jena &amp; Dalal</td>
+<td class="center">Expires 19 December 2024</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Network Working Group</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-ietf-httpapi-idempotency-key-header-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2024-06-17" class="published">17 June 2024</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Standards Track</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2024-12-19">19 December 2024</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">J. Jena</div>
+</div>
+<div class="author">
+      <div class="author-name">S. Dalal</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">The Idempotency-Key HTTP Header Field</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">The HTTP Idempotency-Key request header field can be used to carry idempotency key in order to make non-idempotent HTTP methods such as <code>POST</code> or <code>PATCH</code> fault-tolerant.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note rfcEditorRemove" id="section-note.1">
+      <h2 id="name-about-this-document">
+<a href="#name-about-this-document" class="section-name selfRef">About This Document</a>
+      </h2>
+<p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">
+        Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/">https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+<p id="section-note.1-3">
+        Discussion of this document takes place on the
+        HTTPAPI Working Group mailing list (<span><a href="mailto:httpapi@ietf.org">mailto:httpapi@ietf.org</a></span>),
+        which is archived at <span><a href="https://mailarchive.ietf.org/arch/browse/httpapi/">https://mailarchive.ietf.org/arch/browse/httpapi/</a></span>.
+        Subscribe at <span><a href="https://www.ietf.org/mailman/listinfo/httpapi/">https://www.ietf.org/mailman/listinfo/httpapi/</a></span>.
+        Working Group information can be found at <span><a href="https://ietf-wg-httpapi.github.io/">https://ietf-wg-httpapi.github.io/</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+<p id="section-note.1-4">Source for this draft and an issue tracker can be found at
+        <span><a href="https://github.com/ietf-wg-httpapi/idempotency">https://github.com/ietf-wg-httpapi/idempotency</a></span>.<a href="#section-note.1-4" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 19 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2024 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-notational-conventions" class="internal xref">Notational Conventions</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-the-idempotency-key-http-re" class="internal xref">The Idempotency-Key HTTP Request Header Field</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
+                <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-syntax" class="internal xref">Syntax</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-uniqueness-of-idempotency-k" class="internal xref">Uniqueness of Idempotency Key</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3">
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-idempotency-key-validity-an" class="internal xref">Idempotency Key Validity and Expiry</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4">
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-idempotency-fingerprint" class="internal xref">Idempotency Fingerprint</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.5">
+                <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="auto internal xref">2.5</a>.  <a href="#name-responsibilities" class="internal xref">Responsibilities</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.6">
+                <p id="section-toc.1-1.2.2.6.1"><a href="#section-2.6" class="auto internal xref">2.6</a>.  <a href="#name-idempotency-enforcement-sce" class="internal xref">Idempotency Enforcement Scenarios</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.7">
+                <p id="section-toc.1-1.2.2.7.1"><a href="#section-2.7" class="auto internal xref">2.7</a>.  <a href="#name-error-scenarios" class="internal xref">Error Scenarios</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-the-idempotency-key-http-req" class="internal xref">The Idempotency-Key HTTP Request Header Field</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-implementation-status" class="internal xref">Implementation Status</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-implementing-the-concept" class="internal xref">Implementing the Concept</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-examples" class="internal xref">Examples</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-imported-abnf" class="internal xref">Imported ABNF</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">Idempotence is the property of certain operations in mathematics and computer science whereby they can be applied multiple times without changing the result beyond the initial application. It does not matter if the operation is called only once, or 10s of times over.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">Idempotency is important in building a fault-tolerant HTTP API. An HTTP request method is considered <code>idempotent</code> if the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request. According to <span>[<a href="#RFC7231" class="cite xref">RFC7231</a>]</span>, HTTP methods <code>OPTIONS</code>, <code>HEAD</code>, <code>GET</code>, <code>PUT</code> and <code>DELETE</code> are idempotent while methods <code>POST</code> and <code>PATCH</code> are not.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">Let's say a client of an HTTP API wants to create (or update) a resource using a <code>POST</code> method. Since <code>POST</code> is NOT an idempotent method, calling it multiple times can result in duplication or wrong updates. Consider a scenario where the client sent a <code>POST</code> request to the server, but it got a timeout. Following questions arise :  Is the resource actually created (or updated)? Did the timeout occur during sending of the request, or when receiving of the response? Can the client safely retry the request, or does it need to figure out what happened in the first place? If <code>POST</code> had been an idempotent method, such questions may not arise. Client would safely retry a request until it actually gets a valid response from the server.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">For many use cases of HTTP APIs, duplicated resources are a severe problem from a business perspective. For example, duplicate records for requests involving any kind of money transfer <code>MUST NOT</code> be allowed. In other cases, processing of duplicate webhook delivery is not expected.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<div id="notational-conventions">
+<section id="section-1.1">
+        <h3 id="name-notational-conventions">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-notational-conventions" class="section-name selfRef">Notational Conventions</a>
+        </h3>
+<p id="section-1.1-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+"<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
+described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
+appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">This specification uses the Augmented Backus-Naur Form (ABNF) notation of <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span> and includes, by reference, the IMF-fixdate rule as defined in Section 7.1.1.1 of <span>[<a href="#RFC7231" class="cite xref">RFC7231</a>]</span>.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-3">The term "resource" is to be interpreted as defined in Section 2 of <span>[<a href="#RFC7231" class="cite xref">RFC7231</a>]</span>, that is identified by an URI. The term "resource server" is to be interpreted as "origin server" as defined in Section 3 of <span>[<a href="#RFC7231" class="cite xref">RFC7231</a>]</span>.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="the-idempotency-key-http-request-header-field">
+<section id="section-2">
+      <h2 id="name-the-idempotency-key-http-re">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-the-idempotency-key-http-re" class="section-name selfRef">The Idempotency-Key HTTP Request Header Field</a>
+      </h2>
+<p id="section-2-1">An idempotency key is a unique value generated by the client which the resource server uses to recognize subsequent retries of the same request. The <code>Idempotency-Key</code> HTTP request header field carries this key.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<div id="syntax">
+<section id="section-2.1">
+        <h3 id="name-syntax">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-syntax" class="section-name selfRef">Syntax</a>
+        </h3>
+<p id="section-2.1-1"><code>Idempotency-Key</code> is an Item Structured Header <span>[<a href="#RFC8941" class="cite xref">RFC8941</a>]</span>. Its value <span class="bcp14">MUST</span> be a String. Refer to Section 3.3.3 of <span>[<a href="#RFC8941" class="cite xref">RFC8941</a>]</span> for ABNF of <code>sf-string</code>:<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.1-2">
+<pre>
+Idempotency-Key = sf-string
+</pre><a href="#section-2.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-2.1-3">Clients <span class="bcp14">MUST NOT</span> include more than one <code>Idempotency-Key</code> header field in the same request.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+<p id="section-2.1-4">The following example shows an idempotency key using <code>UUID</code> <span>[<a href="#RFC4122" class="cite xref">RFC4122</a>]</span>:<a href="#section-2.1-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.1-5">
+<pre>
+Idempotency-Key: "8e03978e-40d5-43e8-bc93-6894a57f9324"
+</pre><a href="#section-2.1-5" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="uniqueness-of-idempotency-key">
+<section id="section-2.2">
+        <h3 id="name-uniqueness-of-idempotency-k">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-uniqueness-of-idempotency-k" class="section-name selfRef">Uniqueness of Idempotency Key</a>
+        </h3>
+<p id="section-2.2-1">The idempotency key that is supplied as part of every <code>POST</code> request <span class="bcp14">MUST</span> be unique and <span class="bcp14">MUST NOT</span> be reused with another request with a different request payload.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-2">Uniqueness of the key <span class="bcp14">MUST</span> be defined by the resource owner and <span class="bcp14">MUST</span> be implemented by the clients of the resource server. It is <span class="bcp14">RECOMMENDED</span> that <code>UUID</code> <span>[<a href="#RFC4122" class="cite xref">RFC4122</a>]</span> or a similar random identifier be used as an idempotency key.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="idempotency-key-validity-and-expiry">
+<section id="section-2.3">
+        <h3 id="name-idempotency-key-validity-an">
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-idempotency-key-validity-an" class="section-name selfRef">Idempotency Key Validity and Expiry</a>
+        </h3>
+<p id="section-2.3-1">The resource <span class="bcp14">MAY</span> enforce time based idempotency keys, thus, be able to purge or delete a key upon its expiry. The resource server <span class="bcp14">SHOULD</span> define such expiration policy and publish it in the documentation.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="idempotency-fingerprint">
+<section id="section-2.4">
+        <h3 id="name-idempotency-fingerprint">
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-idempotency-fingerprint" class="section-name selfRef">Idempotency Fingerprint</a>
+        </h3>
+<p id="section-2.4-1">An idempotency fingerprint <span class="bcp14">MAY</span> be used in conjunction with an idempotency key to determine the uniqueness of a request. Such a fingerprint is generated from request payload data by the resource server. An idempotency fingerprint generation algorithm <span class="bcp14">MAY</span> use one of the following or similar approaches to create a fingerprint.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.4-2.1">
+            <p id="section-2.4-2.1.1">Checksum of the entire request payload.<a href="#section-2.4-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.4-2.2">
+            <p id="section-2.4-2.2.1">Checksum of selected element(s) in the request payload.<a href="#section-2.4-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.4-2.3">
+            <p id="section-2.4-2.3.1">Field value match for each field in the request payload.<a href="#section-2.4-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.4-2.4">
+            <p id="section-2.4-2.4.1">Field value match for selected element(s) in the request payload.<a href="#section-2.4-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.4-2.5">
+            <p id="section-2.4-2.5.1">Request digest/signature.<a href="#section-2.4-2.5.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="responsibilities">
+<section id="section-2.5">
+        <h3 id="name-responsibilities">
+<a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-responsibilities" class="section-name selfRef">Responsibilities</a>
+        </h3>
+<p id="section-2.5-1">Client<a href="#section-2.5-1" class="pilcrow">¶</a></p>
+<p id="section-2.5-2">Clients of HTTP API requiring idempotency, <span class="bcp14">SHOULD</span> understand the idempotency related requirements as published by the server and use appropriate algorithm to generate idempotency keys.<a href="#section-2.5-2" class="pilcrow">¶</a></p>
+<p id="section-2.5-3">Clients <span class="bcp14">MAY</span> choose to send an Idempotency-Key field with any valid random sf-string to indicate the user's intent is to only perform this action once. Without a priori knowledge, a general client cannot assume the server will respect this request.<a href="#section-2.5-3" class="pilcrow">¶</a></p>
+<p id="section-2.5-4">For each request, client <span class="bcp14">SHOULD</span><a href="#section-2.5-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.5-5.1">
+            <p id="section-2.5-5.1.1">Send a unique idempotency key in the HTTP <code>Idempotency-Key</code> request header field.<a href="#section-2.5-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-2.5-6">Resource Server<a href="#section-2.5-6" class="pilcrow">¶</a></p>
+<p id="section-2.5-7">Resource server <span class="bcp14">MUST</span> publish idempotency related specification. This specification <span class="bcp14">MUST</span> include expiration related policy if applicable. Server is responsible for managing the lifecycle of the idempotency key.<a href="#section-2.5-7" class="pilcrow">¶</a></p>
+<p id="section-2.5-8">For each request, server <span class="bcp14">SHOULD</span><a href="#section-2.5-8" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.5-9.1">
+            <p id="section-2.5-9.1.1">Identify idempotency key from the HTTP <code>Idempotency-Key</code> request header field.<a href="#section-2.5-9.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.5-9.2">
+            <p id="section-2.5-9.2.1">Generate idempotency fingerprint if required.<a href="#section-2.5-9.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.5-9.3">
+            <p id="section-2.5-9.3.1">Check for idempotency considering various scenarios including the ones described in section below.<a href="#section-2.5-9.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="idempotency-enforcement-scenarios">
+<section id="section-2.6">
+        <h3 id="name-idempotency-enforcement-sce">
+<a href="#section-2.6" class="section-number selfRef">2.6. </a><a href="#name-idempotency-enforcement-sce" class="section-name selfRef">Idempotency Enforcement Scenarios</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="section-2.6-1.1">
+            <p id="section-2.6-1.1.1">First time request (idempotency key and fingerprint has not been seen)<a href="#section-2.6-1.1.1" class="pilcrow">¶</a></p>
+<p id="section-2.6-1.1.2">
+The resource server <span class="bcp14">SHOULD</span> process the request normally and respond with an appropriate response and status code.<a href="#section-2.6-1.1.2" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.6-1.2">
+            <p id="section-2.6-1.2.1">Duplicate request (idempotency key and fingerprint has been seen)<a href="#section-2.6-1.2.1" class="pilcrow">¶</a></p>
+<p id="section-2.6-1.2.2">
+Retry<a href="#section-2.6-1.2.2" class="pilcrow">¶</a></p>
+<p id="section-2.6-1.2.3">
+The request was retried after the original request completed. The resource server <span class="bcp14">SHOULD</span> respond with the result of the previously completed operation, success or an error. See Error Scenarios for details on errors.<a href="#section-2.6-1.2.3" class="pilcrow">¶</a></p>
+<p id="section-2.6-1.2.4">
+Concurrent Request<a href="#section-2.6-1.2.4" class="pilcrow">¶</a></p>
+<p id="section-2.6-1.2.5">
+The request was retried before the original request completed. The resource server <span class="bcp14">SHOULD</span> respond with a resource conflict error. See Error Scenarios for details.<a href="#section-2.6-1.2.5" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="error-scenarios">
+<section id="section-2.7">
+        <h3 id="name-error-scenarios">
+<a href="#section-2.7" class="section-number selfRef">2.7. </a><a href="#name-error-scenarios" class="section-name selfRef">Error Scenarios</a>
+        </h3>
+<p id="section-2.7-1">If the <code>Idempotency-Key</code> request header is missing for a documented idempotent operation requiring this header, the resource server <span class="bcp14">SHOULD</span> reply with an HTTP <code>400</code> status code with body containing a link pointing to relevant documentation. Following examples shows an error response describing the problem using <span>[<a href="#RFC7807" class="cite xref">RFC7807</a>]</span>.<a href="#section-2.7-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.7-2">
+<pre>
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json
+Content-Language: en
+{
+  "type": "https://developer.example.com/idempotency",
+  "title": "Idempotency-Key is missing",
+  "detail": "This operation is idempotent and it requires correct
+   usage of Idempotency Key.",
+}
+</pre><a href="#section-2.7-2" class="pilcrow">¶</a>
+</div>
+<p id="section-2.7-3">Alternately, using the HTTP header <code>Link</code>, the client can be informed about the error as shown below.<a href="#section-2.7-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.7-4">
+<pre>
+HTTP/1.1 400 Bad Request
+Link: &lt;https://developer.example.com/idempotency&gt;;
+  rel="describedby"; type="text/html"
+</pre><a href="#section-2.7-4" class="pilcrow">¶</a>
+</div>
+<p id="section-2.7-5">If there is an attempt to reuse an idempotency key with a different request payload, the resource server <span class="bcp14">SHOULD</span> reply with a HTTP <code>422</code> status code with body containing a link pointing to relevant documentation. The status code <code>422</code> is defined in Section 11.2 of <span>[<a href="#RFC4918" class="cite xref">RFC4918</a>]</span>.<a href="#section-2.7-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.7-6">
+<pre>
+HTTP/1.1 422 Unprocessable Content
+Content-Type: application/problem+json
+Content-Language: en
+{
+  "type": "https://developer.example.com/idempotency",
+  "title": "Idempotency-Key is already used",
+  "detail": "This operation is idempotent and it requires
+  correct usage of Idempotency Key. Idempotency Key MUST not be
+  reused across different payloads of this operation.",
+}
+</pre><a href="#section-2.7-6" class="pilcrow">¶</a>
+</div>
+<p id="section-2.7-7">The server can also inform the client by using the HTTP header <code>Link</code> as shown below.<a href="#section-2.7-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.7-8">
+<pre>
+HTTP/1.1 422 Unprocessable Content
+Link: &lt;https://developer.example.com/idempotency&gt;;
+rel="describedby"; type="text/html"
+</pre><a href="#section-2.7-8" class="pilcrow">¶</a>
+</div>
+<p id="section-2.7-9">If the request is retried, while the original request is still being processed, the resource server <span class="bcp14">SHOULD</span> reply with an HTTP <code>409</code> status code with body containing problem description.<a href="#section-2.7-9" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.7-10">
+<pre>
+HTTP/1.1 409 Conflict
+Content-Type: application/problem+json
+Content-Language: en
+{
+  "type": "https://developer.example.com/idempotency",
+  "title": "A request is outstanding for this Idempotency-Key",
+  "detail": "A request with the same Idempotency-Key for the
+  same operation is being processed or is outstanding.",
+}
+</pre><a href="#section-2.7-10" class="pilcrow">¶</a>
+</div>
+<p id="section-2.7-11">Or, alternately using the HTTP header <code>Link</code> pointing to the relevant documentation<a href="#section-2.7-11" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.7-12">
+<pre>
+HTTP/1.1 409 Conflict
+Link: &lt;https://developer.example.com/idempotency&gt;;
+rel="describedby"; type="text/html"
+</pre><a href="#section-2.7-12" class="pilcrow">¶</a>
+</div>
+<p id="section-2.7-13">Error scenarios above describe the status of failed idempotent requests after the resource server prcocesses them. Clients <span class="bcp14">MUST</span> correct the requests (with the exception of 409 where no correction is required) before performing a retry operation, or the the resource server <span class="bcp14">MUST</span> fail the request and return one of the above errors.<a href="#section-2.7-13" class="pilcrow">¶</a></p>
+<p id="section-2.7-14">For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any other HTTP error code that is not listed here, the client <span class="bcp14">SHOULD</span> act appropriately by following the resource server's documentation.<a href="#section-2.7-14" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-3">
+      <h2 id="name-iana-considerations">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<div id="the-idempotency-key-http-request-header-field-1">
+<section id="section-3.1">
+        <h3 id="name-the-idempotency-key-http-req">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-the-idempotency-key-http-req" class="section-name selfRef">The Idempotency-Key HTTP Request Header Field</a>
+        </h3>
+<p id="section-3.1-1">The Idempotency-Key field name should be added to the "Hypertext Transfer Protocol (HTTP) Field Name Registry".<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-3.1-2">
+          <dt id="section-3.1-2.1">Field Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-2.2">
+            <p id="section-3.1-2.2.1">Idempotency-Key<a href="#section-3.1-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.1-2.3">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-2.4">
+            <p id="section-3.1-2.4.1">permanent<a href="#section-3.1-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.1-2.5">Specification document:</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-2.6">
+            <p id="section-3.1-2.6.1">This specification, Section 2<a href="#section-3.1-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+</div>
+<div id="implementation-status">
+<section id="section-4">
+      <h2 id="name-implementation-status">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-implementation-status" class="section-name selfRef">Implementation Status</a>
+      </h2>
+<p id="section-4-1">Note to RFC Editor: Please remove this section before publication.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in <span>[<a href="#RFC7942" class="cite xref">RFC7942</a>]</span>.  The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs.  Please note that the listing of any individual implementation here does not imply endorsement by the IETF. Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors.  This is not intended as, and must not be construed to be, a catalog of available implementations or their features.  Readers are advised to note that
+other implementations may exist.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">According to RFC 7942, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature. It is up to the individual working groups to use this information as they see fit".<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-4">Organization: Stripe<a href="#section-4-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-5.1">
+          <p id="section-4-5.1.1">Description: Stripe uses custom HTTP header named <code>Idempotency-Key</code><a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-5.2">
+          <p id="section-4-5.2.1">Reference:  https://stripe.com/docs/idempotency<a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-6">Organization: Adyen<a href="#section-4-6" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-7.1">
+          <p id="section-4-7.1.1">Description: Adyen uses custom HTTP header named <code>Idempotency-Key</code><a href="#section-4-7.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-7.2">
+          <p id="section-4-7.2.1">Reference: https://docs.adyen.com/development-resources/api-idempotency/<a href="#section-4-7.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-8">Organization: Dwolla<a href="#section-4-8" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-9.1">
+          <p id="section-4-9.1.1">Description: Dwolla uses custom HTTP header named <code>Idempotency-Key</code><a href="#section-4-9.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-9.2">
+          <p id="section-4-9.2.1">Reference: https://docs.dwolla.com/<a href="#section-4-9.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-10">Organization: Interledger<a href="#section-4-10" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-11.1">
+          <p id="section-4-11.1.1">Description: Interledger uses custom HTTP header named <code>Idempotency-Key</code><a href="#section-4-11.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-11.2">
+          <p id="section-4-11.2.1">Reference: https://github.com/interledger/<a href="#section-4-11.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-12">Organization: WorldPay<a href="#section-4-12" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-13.1">
+          <p id="section-4-13.1.1">Description: WorldPay uses custom HTTP header named <code>Idempotency-Key</code><a href="#section-4-13.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-13.2">
+          <p id="section-4-13.2.1">Reference: https://developer.worldpay.com/docs/wpg/idempotency<a href="#section-4-13.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-14">Organization: Yandex<a href="#section-4-14" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-15.1">
+          <p id="section-4-15.1.1">Description: Yandex uses custom HTTP header named <code>Idempotency-Key</code><a href="#section-4-15.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-15.2">
+          <p id="section-4-15.2.1">Reference: https://cloud.yandex.com/docs/api-design-guide/concepts/idempotency<a href="#section-4-15.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-16">Organization: http4s.org<a href="#section-4-16" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-17.1">
+          <p id="section-4-17.1.1">Description: Http4s is a minimal, idiomatic Scala interface for HTTP services.<a href="#section-4-17.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-17.2">
+          <p id="section-4-17.2.1">Reference: https://github.com/http4s/http4s<a href="#section-4-17.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-18">Organization: Finastra<a href="#section-4-18" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-19.1">
+          <p id="section-4-19.1.1">Description: Finastra uses custom HTTP header named <code>Idempotency-Key</code><a href="#section-4-19.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-19.2">
+          <p id="section-4-19.2.1">Reference: https://developer.fusionfabric.cloud/<a href="#section-4-19.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-20">Organization: Datatrans<a href="#section-4-20" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-21.1">
+          <p id="section-4-21.1.1">Description: Datatrans focuses on the technical processing of payments, including hosting smart payment forms and correctly routing payment information.<a href="#section-4-21.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-21.2">
+          <p id="section-4-21.2.1">Reference: https://docs.datatrans.ch/docs/api-endpoints<a href="#section-4-21.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<div id="implementing-the-concept">
+<section id="section-4.1">
+        <h3 id="name-implementing-the-concept">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-implementing-the-concept" class="section-name selfRef">Implementing the Concept</a>
+        </h3>
+<p id="section-4.1-1">This is a list of implementations that implement the general concept, but do so using different mechanisms:<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">Organization: Django<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-3.1">
+            <p id="section-4.1-3.1.1">Description: Django uses custom HTTP header named <code>HTTP_IDEMPOTENCY_KEY</code><a href="#section-4.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-3.2">
+            <p id="section-4.1-3.2.1">Reference:  https://pypi.org/project/django-idempotency-key<a href="#section-4.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-4">Organization: Twilio<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-5.1">
+            <p id="section-4.1-5.1.1">Description: Twilio uses custom HTTP header named <code>I-Twilio-Idempotency-Token</code> in webhooks<a href="#section-4.1-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-5.2">
+            <p id="section-4.1-5.2.1">Reference: https://www.twilio.com/docs/usage/webhooks/webhooks-connection-overrides<a href="#section-4.1-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-6">Organization: PayPal<a href="#section-4.1-6" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-7.1">
+            <p id="section-4.1-7.1.1">Description: PayPal uses custom HTTP header named <code>PayPal-Request-Id</code><a href="#section-4.1-7.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-7.2">
+            <p id="section-4.1-7.2.1">Reference:  https://developer.paypal.com/docs/business/develop/idempotency<a href="#section-4.1-7.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-8">Organization: RazorPay<a href="#section-4.1-8" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-9.1">
+            <p id="section-4.1-9.1.1">Description: RazorPay uses custom HTTP header named <code>X-Payout-Idempotency</code><a href="#section-4.1-9.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-9.2">
+            <p id="section-4.1-9.2.1">Reference: https://razorpay.com/docs/razorpayx/api/idempotency/<a href="#section-4.1-9.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-10">Organization: OpenBanking<a href="#section-4.1-10" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-11.1">
+            <p id="section-4.1-11.1.1">Description: OpenBanking uses custom HTTP header called <code>x-idempotency-key</code><a href="#section-4.1-11.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-11.2">
+            <p id="section-4.1-11.2.1">Reference: https://openbankinguk.github.io/read-write-api-site3/v3.1.6/profiles/read-write-data-api-profile.html#request-headers<a href="#section-4.1-11.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-12">Organization: Square<a href="#section-4.1-12" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-13.1">
+            <p id="section-4.1-13.1.1">Description: To make an idempotent API call, Square recommends adding a property named <code>idempotency_key</code> with a unique value in the request body.<a href="#section-4.1-13.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-13.2">
+            <p id="section-4.1-13.2.1">Reference: https://developer.squareup.com/docs/build-basics/using-rest-api<a href="#section-4.1-13.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-14">Organization: Google Standard Payments<a href="#section-4.1-14" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-15.1">
+            <p id="section-4.1-15.1.1">Description: Google Standard Payments API uses a property named <code>requestId</code> in request body in order to provider idempotency in various use cases.<a href="#section-4.1-15.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-15.2">
+            <p id="section-4.1-15.2.1">Reference: https://developers.google.com/standard-payments/payment-processor-service-api/rest/v1/TopLevel/capture<a href="#section-4.1-15.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-16">Organization: BBVA<a href="#section-4.1-16" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-17.1">
+            <p id="section-4.1-17.1.1">Description: BBVA Open Platform uses custom HTTP header called <code>X-Unique-Transaction-ID</code><a href="#section-4.1-17.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-17.2">
+            <p id="section-4.1-17.2.1">Reference: https://bbvaopenplatform.com/apiReference/APIbasics/content/x-unique-transaction-id<a href="#section-4.1-17.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-18">Organization: WebEngage<a href="#section-4.1-18" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-19.1">
+            <p id="section-4.1-19.1.1">Description: WebEngage uses custom HTTP header called <code>x-request-id</code> to identify webhook POST requests uniquely to achieve events idempotency.<a href="#section-4.1-19.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-19.2">
+            <p id="section-4.1-19.2.1">Reference: https://docs.webengage.com/docs/webhooks<a href="#section-4.1-19.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-5">
+      <h2 id="name-security-considerations">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-5-1">This section is meant to inform developers, information providers,
+and users of known security concerns specific to the idempotency keys.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">Resource servers that do not implement  strong idempotency keys, such as UUIDs, or have appropriate controls to validate the idempotency keys, could be victim to various forms of security attacks from malicious clients:<a href="#section-5-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-3.1">
+          <p id="section-5-3.1.1">Injection attacks-When the resource server does not validate the idempotency key in the client request and performs a idempotent cache lookup, there can be security attacks (primarily in the form of injection), compromising the server.<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-3.2">
+          <p id="section-5-3.2.1">Data leaks-When an idempotency implementation allows low entropy keys, attackers <span class="bcp14">MAY</span> determine other keys and use them to fetch existing idempotent cache entries, belonging to other clients.<a href="#section-5-3.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-4">To prevent such situations, the specification recommends the following best practices for idempotency key implementation in the resource server.<a href="#section-5-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-5.1">
+          <p id="section-5-5.1.1">Establish a fixed format for the idempotency key and publish the key’s specification.<a href="#section-5-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-5.2">
+          <p id="section-5-5.2.1">Always validate the key as per its published specification before processing any request.<a href="#section-5-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-5.3">
+          <p id="section-5-5.3.1">On the resource server, implement a unique composite key as the idempotent cache lookup key. For example, a composite key <span class="bcp14">MAY</span> be implemented by combining the idempotency key sent by the client with other client specific attributes known only to the resource server.<a href="#section-5-5.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="examples">
+<section id="section-6">
+      <h2 id="name-examples">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
+      </h2>
+<p id="section-6-1">The first example shows an idempotency-key header field with key value using UUID version 4 scheme:<a href="#section-6-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6-2">
+<pre>
+Idempotency-Key: "8e03978e-40d5-43e8-bc93-6894a57f9324"
+</pre><a href="#section-6-2" class="pilcrow">¶</a>
+</div>
+<p id="section-6-3">Second example shows an idempotency-key header field with key value using some random string generator:<a href="#section-6-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6-4">
+<pre>
+Idempotency-Key: "clkyoesmbgybucifusbbtdsbohtyuuwz"
+</pre><a href="#section-6-4" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<section id="section-7">
+      <h2 id="name-references">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-7.1">
+        <h3 id="name-normative-references">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4122">[RFC4122]</dt>
+        <dd>
+<span class="refAuthor">Leach, P.</span>, <span class="refAuthor">Mealling, M.</span>, and <span class="refAuthor">R. Salz</span>, <span class="refTitle">"A Universally Unique IDentifier (UUID) URN Namespace"</span>, <span class="seriesInfo">RFC 4122</span>, <span class="seriesInfo">DOI 10.17487/RFC4122</span>, <time datetime="2005-07" class="refDate">July 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4122">https://www.rfc-editor.org/rfc/rfc4122</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4918">[RFC4918]</dt>
+        <dd>
+<span class="refAuthor">Dusseault, L., Ed.</span>, <span class="refTitle">"HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV)"</span>, <span class="seriesInfo">RFC 4918</span>, <span class="seriesInfo">DOI 10.17487/RFC4918</span>, <time datetime="2007-06" class="refDate">June 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4918">https://www.rfc-editor.org/rfc/rfc4918</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5234">[RFC5234]</dt>
+        <dd>
+<span class="refAuthor">Crocker, D., Ed.</span> and <span class="refAuthor">P. Overell</span>, <span class="refTitle">"Augmented BNF for Syntax Specifications: ABNF"</span>, <span class="seriesInfo">STD 68</span>, <span class="seriesInfo">RFC 5234</span>, <span class="seriesInfo">DOI 10.17487/RFC5234</span>, <time datetime="2008-01" class="refDate">January 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5234">https://www.rfc-editor.org/rfc/rfc5234</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7230">[RFC7230]</dt>
+        <dd>
+<span class="refAuthor">Fielding, R., Ed.</span> and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing"</span>, <span class="seriesInfo">RFC 7230</span>, <span class="seriesInfo">DOI 10.17487/RFC7230</span>, <time datetime="2014-06" class="refDate">June 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7230">https://www.rfc-editor.org/rfc/rfc7230</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7231">[RFC7231]</dt>
+        <dd>
+<span class="refAuthor">Fielding, R., Ed.</span> and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content"</span>, <span class="seriesInfo">RFC 7231</span>, <span class="seriesInfo">DOI 10.17487/RFC7231</span>, <time datetime="2014-06" class="refDate">June 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7231">https://www.rfc-editor.org/rfc/rfc7231</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7807">[RFC7807]</dt>
+        <dd>
+<span class="refAuthor">Nottingham, M.</span> and <span class="refAuthor">E. Wilde</span>, <span class="refTitle">"Problem Details for HTTP APIs"</span>, <span class="seriesInfo">RFC 7807</span>, <span class="seriesInfo">DOI 10.17487/RFC7807</span>, <time datetime="2016-03" class="refDate">March 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7807">https://www.rfc-editor.org/rfc/rfc7807</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+        <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8941">[RFC8941]</dt>
+      <dd>
+<span class="refAuthor">Nottingham, M.</span> and <span class="refAuthor">P. Kamp</span>, <span class="refTitle">"Structured Field Values for HTTP"</span>, <span class="seriesInfo">RFC 8941</span>, <span class="seriesInfo">DOI 10.17487/RFC8941</span>, <time datetime="2021-02" class="refDate">February 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8941">https://www.rfc-editor.org/rfc/rfc8941</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-7.2">
+        <h3 id="name-informative-references">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC7942">[RFC7942]</dt>
+      <dd>
+<span class="refAuthor">Sheffer, Y.</span> and <span class="refAuthor">A. Farrel</span>, <span class="refTitle">"Improving Awareness of Running Code: The Implementation Status Section"</span>, <span class="seriesInfo">BCP 205</span>, <span class="seriesInfo">RFC 7942</span>, <span class="seriesInfo">DOI 10.17487/RFC7942</span>, <time datetime="2016-07" class="refDate">July 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7942">https://www.rfc-editor.org/rfc/rfc7942</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+<div id="imported-abnf">
+<section id="appendix-A">
+      <h2 id="name-imported-abnf">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-imported-abnf" class="section-name selfRef">Imported ABNF</a>
+      </h2>
+<p id="appendix-A-1">The following core rules are included by reference, as defined in Appendix B.1 of <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span>: ALPHA (letters), CR (carriage return), CRLF (CR LF), CTL (controls), DIGIT (decimal 0-9), DQUOTE (double quote), HEXDIG (hexadecimal 0-9/A-F/a-f), LF (line feed), OCTET (any 8-bit sequence of data), SP (space), and VCHAR (any visible US-ASCII character).<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-2">The rules below are defined in <span>[<a href="#RFC7230" class="cite xref">RFC7230</a>]</span>:<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A-3">
+<pre>
+ obs-text      = &lt;obs-text, see [RFC7230], Section 3.2.6&gt;
+</pre><a href="#appendix-A-3" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-B">
+      <h2 id="name-acknowledgments">
+<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="appendix-B-1">The authors would like to thank Mark Nottingham for his support for this Internet Draft. We would like to acknowledge that this draft is inspired by Idempotency related patterns described in API documentation of <a href="https://github.com/paypal/api-standards/blob/master/patterns.md#idempotency">PayPal</a> and <a href="https://stripe.com/docs/idempotency">Stripe</a> as well as Internet Draft on <a href="https://tools.ietf.org/html/draft-nottingham-http-poe-00">POST Once Exactly</a> authored by Mark Nottingham.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<p id="appendix-B-2">The authors take all responsibility for errors and omissions.<a href="#appendix-B-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Jayadeba Jena</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:jayadebaj@gmail.com" class="email">jayadebaj@gmail.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Sanjay Dalal</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:sanjay.dalal@cal.berkeley.edu" class="email">sanjay.dalal@cal.berkeley.edu</a>
+</div>
+<div class="url">
+<span>URI:</span>
+<a href="https://github.com/sdatspun2" class="url">https://github.com/sdatspun2</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
