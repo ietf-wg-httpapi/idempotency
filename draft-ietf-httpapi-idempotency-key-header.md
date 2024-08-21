@@ -45,7 +45,7 @@ In mathematics and computer science, an idempotent operation is one that can be 
 
 Idempotency is important in building fault-tolerant HTTP APIs. An HTTP request method is considered `idempotent` if the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request. Per {{!RFC9110}}, the methods `OPTIONS`, `HEAD`, `GET`, `PUT` and `DELETE` are idempotent while methods `POST` and `PATCH` are not.
 
-Let's say a client of an HTTP API wants to create (or update) a resource using a `POST` method. Repeating the request multiple times can result in duplication or incorrect updates. Consider a scenario where the client sent a `POST` request to the server, but the request timed out. The client does not know if the resource was created (or updated), because it does not know when the timeout occured from the server's perspective. Furthermore, the client does not know if it can safely retry the request. 
+Let's say a client of an HTTP API wants to create (or update) a resource using a `POST` method. Repeating the request multiple times can result in duplication or incorrect updates. Consider a scenario where the client sent a `POST` request to the server, but the request timed out. The client is left uncertain about the status of the resource. It doesn't know if the resource was created or updated, or if the server even completed processing the request. Furthermore, the client does not know if it can safely retry the request. 
 
 
 ##  Notational Conventions
