@@ -127,7 +127,7 @@ For each request, a server SHOULD:
 
   Concurrent Request
 
-  The request was retried before the original request completed. The resource SHOULD respond with a resource conflict error. See Error Scenarios for details.
+  The resource SHOULD respond with a response consistent with the request being completed according to the user's intent. See Error Scenarios for details.
 
 
 ## Error Handling
