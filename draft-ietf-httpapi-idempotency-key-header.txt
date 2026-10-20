@@ -5,7 +5,9 @@
 Network Working Group                                            J. Jena
 Internet-Draft                                                          
 Intended status: Standards Track                                S. Dalal
-Expires: 23 April 2027                                   20 October 2026
+Expires: 23 April 2027                                                  
+                                                              D. Tishkin
+                                                         20 October 2026
 
 
                  The Idempotency-Key HTTP Header Field
@@ -619,3 +621,7 @@ Authors' Addresses
    Sanjay Dalal
    Email: sanjay.dalal@cal.berkeley.edu
    URI:   https://github.com/sdatspun2
+
+
+   Dmitrii Tishkin
+   Email: hello@dmi03.com
