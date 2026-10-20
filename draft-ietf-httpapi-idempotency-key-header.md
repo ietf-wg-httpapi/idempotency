@@ -27,6 +27,11 @@ author:
     email: sanjay.dalal@cal.berkeley.edu
     uri: https://github.com/sdatspun2
 
+  -
+    ins: D. Tishkin
+    name: Dmitrii Tishkin
+    email: hello@dmi03.com
+
 
 normative:
 
