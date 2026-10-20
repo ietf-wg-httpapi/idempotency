@@ -52,9 +52,9 @@ Let's say a client of an HTTP API wants to create (or update) a resource using a
 
 {::boilerplate bcp14-tagged}
 
-This specification uses the Augmented Backus-Naur Form (ABNF) notation of {{!RFC5234}} and includes, by reference, the IMF-fixdate rule as defined in Section 7.1.1.1 of {{!RFC7231}}.
+This specification uses the Augmented Backus-Naur Form (ABNF) notation of {{!RFC5234}} and includes, by reference, the IMF-fixdate rule as defined in Section 5.6.7 of {{!RFC9110}}.
 
-The term "resource" is to be interpreted as defined in Section 2 of {{!RFC7231}}, that is identified by an URI.
+The term "resource" is to be interpreted as defined in Section 3.1 of {{!RFC9110}}, that is identified by an URI.
 
 # The Idempotency-Key HTTP Request Header Field
 
