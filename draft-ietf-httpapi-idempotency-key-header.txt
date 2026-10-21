@@ -5,9 +5,9 @@
 Network Working Group                                            J. Jena
 Internet-Draft                                                          
 Intended status: Standards Track                                S. Dalal
-Expires: 23 April 2027                                                  
+Expires: 24 April 2027                                                  
                                                               D. Tishkin
-                                                         20 October 2026
+                                                         21 October 2026
 
 
                  The Idempotency-Key HTTP Header Field
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2027.
+   This Internet-Draft will expire on 24 April 2027.
 
 Copyright Notice
 
@@ -140,8 +140,8 @@ Table of Contents
 
 2.1.  Syntax
 
-   Idempotency-Key is an Item Structured Header [RFC8941].  Its value
-   MUST be a String (Section 3.3.3 of [RFC8941]).
+   Idempotency-Key is an Item Structured Header [RFC9651].  Its value
+   MUST be a String (Section 3.3.3 of [RFC9651]).
 
 2.2.  Uniqueness of Idempotency Key
 
@@ -150,11 +150,11 @@ Table of Contents
 
    Uniqueness of the key MUST be defined by the resource owner and MUST
    be implemented by the clients of the resource.  It is RECOMMENDED
-   that a UUID [RFC4122] or a similar random identifier be used as an
+   that a UUID [RFC9562] or a similar random identifier be used as an
    idempotency key.
 
    The following example shows an idempotency key whose value is a UUID
-   [RFC4122]:
+   [RFC9562]:
 
    Idempotency-Key: "8e03978e-40d5-43e8-bc93-6894a57f9324"
 
@@ -245,7 +245,7 @@ Table of Contents
    idempotent operation requiring this header, the resource SHOULD reply
    with an HTTP 400 status code with body containing a link pointing to
    relevant documentation.  Following examples shows an error response
-   describing the problem using [RFC7807].
+   describing the problem using [RFC9457].
 
        HTTP/1.1 400 Bad Request
        Content-Type: application/problem+json
@@ -559,32 +559,31 @@ Table of Contents
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
-   [RFC4122]  Leach, P., Mealling, M., and R. Salz, "A Universally
-              Unique IDentifier (UUID) URN Namespace", RFC 4122,
-              DOI 10.17487/RFC4122, July 2005,
-              <https://www.rfc-editor.org/rfc/rfc4122>.
-
    [RFC5234]  Crocker, D., Ed. and P. Overell, "Augmented BNF for Syntax
               Specifications: ABNF", STD 68, RFC 5234,
               DOI 10.17487/RFC5234, January 2008,
               <https://www.rfc-editor.org/rfc/rfc5234>.
 
-   [RFC7807]  Nottingham, M. and E. Wilde, "Problem Details for HTTP
-              APIs", RFC 7807, DOI 10.17487/RFC7807, March 2016,
-              <https://www.rfc-editor.org/rfc/rfc7807>.
-
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
-
-   [RFC8941]  Nottingham, M. and P. Kamp, "Structured Field Values for
-              HTTP", RFC 8941, DOI 10.17487/RFC8941, February 2021,
-              <https://www.rfc-editor.org/rfc/rfc8941>.
 
    [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
               Ed., "HTTP Semantics", STD 97, RFC 9110,
               DOI 10.17487/RFC9110, June 2022,
               <https://www.rfc-editor.org/rfc/rfc9110>.
+
+   [RFC9457]  Nottingham, M., Wilde, E., and S. Dalal, "Problem Details
+              for HTTP APIs", RFC 9457, DOI 10.17487/RFC9457, July 2023,
+              <https://www.rfc-editor.org/rfc/rfc9457>.
+
+   [RFC9562]  Davis, K., Peabody, B., and P. Leach, "Universally Unique
+              IDentifiers (UUIDs)", RFC 9562, DOI 10.17487/RFC9562, May
+              2024, <https://www.rfc-editor.org/rfc/rfc9562>.
+
+   [RFC9651]  Nottingham, M. and P. Kamp, "Structured Field Values for
+              HTTP", RFC 9651, DOI 10.17487/RFC9651, September 2024,
+              <https://www.rfc-editor.org/rfc/rfc9651>.
 
 7.2.  Informative References
 
