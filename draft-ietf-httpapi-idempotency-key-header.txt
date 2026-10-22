@@ -5,9 +5,9 @@
 Network Working Group                                            J. Jena
 Internet-Draft                                                          
 Intended status: Standards Track                                S. Dalal
-Expires: 24 April 2027                                                  
+Expires: 25 April 2027                                                  
                                                               D. Tishkin
-                                                         21 October 2026
+                                                         22 October 2026
 
 
                  The Idempotency-Key HTTP Header Field
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 April 2027.
+   This Internet-Draft will expire on 25 April 2027.
 
 Copyright Notice
 
@@ -124,12 +124,8 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-   This specification uses the Augmented Backus-Naur Form (ABNF)
-   notation of [RFC5234] and includes, by reference, the IMF-fixdate
-   rule as defined in Section 5.6.7 of [RFC9110].
-
    The term "resource" is to be interpreted as defined in Section 3.1 of
-   [RFC9110], that is identified by an URI.
+   [RFC9110], that is, identified by a URI.
 
 2.  The Idempotency-Key HTTP Request Header Field
 
@@ -140,8 +136,8 @@ Table of Contents
 
 2.1.  Syntax
 
-   Idempotency-Key is an Item Structured Header [RFC9651].  Its value
-   MUST be a String (Section 3.3.3 of [RFC9651]).
+   Idempotency-Key is an Item Structured Header Field [RFC9651].  Its
+   value MUST be a String (Section 3.3.3 of [RFC9651]).
 
 2.2.  Uniqueness of Idempotency Key
 
@@ -188,7 +184,7 @@ Table of Contents
 
    Clients of HTTP API requiring idempotency SHOULD understand the
    idempotency related requirements as published by the server and use
-   appropriate algorithm to generate idempotency keys.
+   an appropriate algorithm to generate idempotency keys.
 
    Clients MAY choose to send an Idempotency-Key field with any valid
    value to indicate the user's intent is to only perform this action
@@ -202,7 +198,7 @@ Table of Contents
 
 2.5.2.  Resource
 
-   Resources MUST publish a idempotency related specification.  This
+   Resources MUST publish an idempotency-related specification.  This
    specification MUST include expiration related policy if applicable.
    A resource is responsible for managing the lifecycle of the
    idempotency key.
@@ -244,8 +240,8 @@ Table of Contents
    If the Idempotency-Key request header is missing for a documented
    idempotent operation requiring this header, the resource SHOULD reply
    with an HTTP 400 status code with body containing a link pointing to
-   relevant documentation.  Following examples shows an error response
-   describing the problem using [RFC9457].
+   relevant documentation.  The following example shows an error
+   response describing the problem using [RFC9457].
 
        HTTP/1.1 400 Bad Request
        Content-Type: application/problem+json
@@ -254,7 +250,7 @@ Table of Contents
          "type": "https://developer.example.com/idempotency",
          "title": "Idempotency-Key is missing",
          "detail": "This operation is idempotent and it requires correct
-          usage of Idempotency Key.",
+          usage of Idempotency Key."
        }
 
    Alternately, using the HTTP header Link, the client can be informed
@@ -265,7 +261,7 @@ Table of Contents
          rel="describedby"; type="text/html"
 
    If there is an attempt to reuse an idempotency key with a different
-   request payload, the resource SHOULD reply with a HTTP 422 status
+   request payload, the resource SHOULD reply with an HTTP 422 status
    code with body containing a link pointing to relevant documentation.
    The status code 422 is defined in Section 15.5.21 of [RFC9110].
 
@@ -276,8 +272,8 @@ Table of Contents
          "type": "https://developer.example.com/idempotency",
          "title": "Idempotency-Key is already used",
          "detail": "This operation is idempotent and it requires
-         correct usage of Idempotency Key. Idempotency Key MUST not be
-         reused across different payloads of this operation.",
+         correct usage of Idempotency Key. Idempotency Key must not be
+         reused across different payloads of this operation."
        }
 
    The server can also inform the client by using the HTTP header Link
@@ -298,7 +294,7 @@ Table of Contents
          "type": "https://developer.example.com/idempotency",
          "title": "A request is outstanding for this Idempotency-Key",
          "detail": "A request with the same Idempotency-Key for the
-         same operation is being processed or is outstanding.",
+         same operation is being processed or is outstanding."
        }
 
    Or, alternately using the HTTP header Link pointing to the relevant
@@ -309,10 +305,10 @@ Table of Contents
        rel="describedby"; type="text/html"
 
    Error scenarios above describe the status of failed idempotent
-   requests after the resource prcocesses them.  Clients MUST correct
-   the requests (with the exception of 409 where no correction is
-   required) before performing a retry operation, or the resource MUST
-   fail the request and return one of the above errors.
+   requests after the resource processes them.  Clients MUST correct the
+   requests (with the exception of 409 where no correction is required)
+   before performing a retry operation, or the resource MUST fail the
+   request and return one of the above errors.
 
    For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429,
    or any other HTTP error code that is not listed here, the client
@@ -480,7 +476,7 @@ Table of Contents
    Organization: Google Standard Payments
 
    *  Description: Google Standard Payments API uses a property named
-      requestId in request body in order to provider idempotency in
+      requestId in request body in order to provide idempotency in
       various use cases.
 
    *  Reference: https://developers.google.com/standard-payments/
@@ -514,12 +510,12 @@ Table of Contents
    could be victim to various forms of security attacks from malicious
    clients:
 
-   *  Injection attacks - When the resources does not validate the
-      idempotency key in the client request and performs a idempotent
+   *  Injection attacks - When the resource does not validate the
+      idempotency key in the client request and performs an idempotent
       cache lookup, there can be security attacks (primarily in the form
       of injection), compromising the server.
 
-   *  Data leaks-When an idempotency implementation allows low entropy
+   *  Data leaks - When an idempotency implementation allows low entropy
       keys, attackers MAY determine other keys and use them to fetch
       existing idempotent cache entries, belonging to other clients.
 
@@ -545,8 +541,8 @@ Table of Contents
 
    Idempotency-Key: "8e03978e-40d5-43e8-bc93-6894a57f9324"
 
-   Second example shows an idempotency-key header field with key value
-   using a random string generator:
+   The second example shows an idempotency-key header field with key
+   value using a random string generator:
 
    Idempotency-Key: "clkyoesmbgybucifusbbtdsbohtyuuwz"
 
@@ -558,11 +554,6 @@ Table of Contents
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
-
-   [RFC5234]  Crocker, D., Ed. and P. Overell, "Augmented BNF for Syntax
-              Specifications: ABNF", STD 68, RFC 5234,
-              DOI 10.17487/RFC5234, January 2008,
-              <https://www.rfc-editor.org/rfc/rfc5234>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,

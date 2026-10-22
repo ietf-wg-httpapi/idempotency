@@ -1046,7 +1046,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Jena, et al.</td>
-<td class="center">Expires 24 April 2027</td>
+<td class="center">Expires 25 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1059,12 +1059,12 @@ svg {
 <dd class="internet-draft">draft-ietf-httpapi-idempotency-key-header-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-10-21" class="published">21 October 2026</time>
+<time datetime="2026-10-22" class="published">22 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-04-24">24 April 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-25">25 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1119,7 +1119,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1253,8 +1253,7 @@ svg {
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">This specification uses the Augmented Backus-Naur Form (ABNF) notation of <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span> and includes, by reference, the IMF-fixdate rule as defined in Section 5.6.7 of <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
-<p id="section-1.1-3">The term "resource" is to be interpreted as defined in Section 3.1 of <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, that is identified by an URI.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">The term "resource" is to be interpreted as defined in Section 3.1 of <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, that is, identified by a URI.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1270,7 +1269,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         <h3 id="name-syntax">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-syntax" class="section-name selfRef">Syntax</a>
         </h3>
-<p id="section-2.1-1"><code>Idempotency-Key</code> is an Item Structured Header <span>[<a href="#RFC9651" class="cite xref">RFC9651</a>]</span>. Its value <span class="bcp14">MUST</span> be a String (Section 3.3.3 of <span>[<a href="#RFC9651" class="cite xref">RFC9651</a>]</span>).<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-1"><code>Idempotency-Key</code> is an Item Structured Header Field <span>[<a href="#RFC9651" class="cite xref">RFC9651</a>]</span>. Its value <span class="bcp14">MUST</span> be a String (Section 3.3.3 of <span>[<a href="#RFC9651" class="cite xref">RFC9651</a>]</span>).<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="uniqueness-of-idempotency-key">
@@ -1331,7 +1330,7 @@ Idempotency-Key: "8e03978e-40d5-43e8-bc93-6894a57f9324"
           <h4 id="name-client">
 <a href="#section-2.5.1" class="section-number selfRef">2.5.1. </a><a href="#name-client" class="section-name selfRef">Client</a>
           </h4>
-<p id="section-2.5.1-1">Clients of HTTP API requiring idempotency <span class="bcp14">SHOULD</span> understand the idempotency related requirements as published by the server and use appropriate algorithm to generate idempotency keys.<a href="#section-2.5.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.5.1-1">Clients of HTTP API requiring idempotency <span class="bcp14">SHOULD</span> understand the idempotency related requirements as published by the server and use an appropriate algorithm to generate idempotency keys.<a href="#section-2.5.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.5.1-2">Clients <span class="bcp14">MAY</span> choose to send an Idempotency-Key field with any valid value to indicate the user's intent is to only perform this action once. Without a priori knowledge, a general client cannot assume the server will respect this request.<a href="#section-2.5.1-2" class="pilcrow">¶</a></p>
 <p id="section-2.5.1-3">For each request, a client <span class="bcp14">SHOULD</span>:<a href="#section-2.5.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1346,7 +1345,7 @@ Idempotency-Key: "8e03978e-40d5-43e8-bc93-6894a57f9324"
           <h4 id="name-resource">
 <a href="#section-2.5.2" class="section-number selfRef">2.5.2. </a><a href="#name-resource" class="section-name selfRef">Resource</a>
           </h4>
-<p id="section-2.5.2-1">Resources <span class="bcp14">MUST</span> publish a idempotency related specification. This specification <span class="bcp14">MUST</span> include expiration related policy if applicable. A resource is responsible for managing the lifecycle of the idempotency key.<a href="#section-2.5.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.5.2-1">Resources <span class="bcp14">MUST</span> publish an idempotency-related specification. This specification <span class="bcp14">MUST</span> include expiration related policy if applicable. A resource is responsible for managing the lifecycle of the idempotency key.<a href="#section-2.5.2-1" class="pilcrow">¶</a></p>
 <p id="section-2.5.2-2">For each request, a server <span class="bcp14">SHOULD</span>:<a href="#section-2.5.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.5.2-3.1">
@@ -1393,7 +1392,7 @@ The request was retried before the original request completed. The resource <spa
         <h3 id="name-error-handling">
 <a href="#section-2.7" class="section-number selfRef">2.7. </a><a href="#name-error-handling" class="section-name selfRef">Error Handling</a>
         </h3>
-<p id="section-2.7-1">If the <code>Idempotency-Key</code> request header is missing for a documented idempotent operation requiring this header, the resource <span class="bcp14">SHOULD</span> reply with an HTTP <code>400</code> status code with body containing a link pointing to relevant documentation. Following examples shows an error response describing the problem using <span>[<a href="#RFC9457" class="cite xref">RFC9457</a>]</span>.<a href="#section-2.7-1" class="pilcrow">¶</a></p>
+<p id="section-2.7-1">If the <code>Idempotency-Key</code> request header is missing for a documented idempotent operation requiring this header, the resource <span class="bcp14">SHOULD</span> reply with an HTTP <code>400</code> status code with body containing a link pointing to relevant documentation. The following example shows an error response describing the problem using <span>[<a href="#RFC9457" class="cite xref">RFC9457</a>]</span>.<a href="#section-2.7-1" class="pilcrow">¶</a></p>
 <div class="lang-http-message sourcecode" id="section-2.7-2">
 <pre>
     HTTP/1.1 400 Bad Request
@@ -1403,7 +1402,7 @@ The request was retried before the original request completed. The resource <spa
       "type": "https://developer.example.com/idempotency",
       "title": "Idempotency-Key is missing",
       "detail": "This operation is idempotent and it requires correct
-       usage of Idempotency Key.",
+       usage of Idempotency Key."
     }
 </pre><a href="#section-2.7-2" class="pilcrow">¶</a>
 </div>
@@ -1415,7 +1414,7 @@ The request was retried before the original request completed. The resource <spa
       rel="describedby"; type="text/html"
 </pre><a href="#section-2.7-4" class="pilcrow">¶</a>
 </div>
-<p id="section-2.7-5">If there is an attempt to reuse an idempotency key with a different request payload, the resource <span class="bcp14">SHOULD</span> reply with a HTTP <code>422</code> status code with body containing a link pointing to relevant documentation. The status code <code>422</code> is defined in Section 15.5.21 of <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>.<a href="#section-2.7-5" class="pilcrow">¶</a></p>
+<p id="section-2.7-5">If there is an attempt to reuse an idempotency key with a different request payload, the resource <span class="bcp14">SHOULD</span> reply with an HTTP <code>422</code> status code with body containing a link pointing to relevant documentation. The status code <code>422</code> is defined in Section 15.5.21 of <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>.<a href="#section-2.7-5" class="pilcrow">¶</a></p>
 <div class="lang-http-message sourcecode" id="section-2.7-6">
 <pre>
     HTTP/1.1 422 Unprocessable Content
@@ -1425,8 +1424,8 @@ The request was retried before the original request completed. The resource <spa
       "type": "https://developer.example.com/idempotency",
       "title": "Idempotency-Key is already used",
       "detail": "This operation is idempotent and it requires
-      correct usage of Idempotency Key. Idempotency Key MUST not be
-      reused across different payloads of this operation.",
+      correct usage of Idempotency Key. Idempotency Key must not be
+      reused across different payloads of this operation."
     }
 </pre><a href="#section-2.7-6" class="pilcrow">¶</a>
 </div>
@@ -1448,7 +1447,7 @@ The request was retried before the original request completed. The resource <spa
       "type": "https://developer.example.com/idempotency",
       "title": "A request is outstanding for this Idempotency-Key",
       "detail": "A request with the same Idempotency-Key for the
-      same operation is being processed or is outstanding.",
+      same operation is being processed or is outstanding."
     }
 </pre><a href="#section-2.7-10" class="pilcrow">¶</a>
 </div>
@@ -1460,7 +1459,7 @@ The request was retried before the original request completed. The resource <spa
     rel="describedby"; type="text/html"
 </pre><a href="#section-2.7-12" class="pilcrow">¶</a>
 </div>
-<p id="section-2.7-13">Error scenarios above describe the status of failed idempotent requests after the resource prcocesses them. Clients <span class="bcp14">MUST</span> correct the requests (with the exception of 409 where no correction is required) before performing a retry operation, or the resource <span class="bcp14">MUST</span> fail the request and return one of the above errors.<a href="#section-2.7-13" class="pilcrow">¶</a></p>
+<p id="section-2.7-13">Error scenarios above describe the status of failed idempotent requests after the resource processes them. Clients <span class="bcp14">MUST</span> correct the requests (with the exception of 409 where no correction is required) before performing a retry operation, or the resource <span class="bcp14">MUST</span> fail the request and return one of the above errors.<a href="#section-2.7-13" class="pilcrow">¶</a></p>
 <p id="section-2.7-14">For other 4xx/5xx errors, such as 401, 403, 500, 502, 503, 504, 429, or any other HTTP error code that is not listed here, the client <span class="bcp14">SHOULD</span> act appropriately by following the resource's documentation.<a href="#section-2.7-14" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1660,7 +1659,7 @@ other implementations may exist.<a href="#section-4-2" class="pilcrow">¶</a></p
 <p id="section-4.1-16">Organization: Google Standard Payments<a href="#section-4.1-16" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-17.1">
-            <p id="section-4.1-17.1.1">Description: Google Standard Payments API uses a property named <code>requestId</code> in request body in order to provider idempotency in various use cases.<a href="#section-4.1-17.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-17.1.1">Description: Google Standard Payments API uses a property named <code>requestId</code> in request body in order to provide idempotency in various use cases.<a href="#section-4.1-17.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-17.2">
             <p id="section-4.1-17.2.1">Reference: https://developers.google.com/standard-payments/payment-processor-service-api/rest/v1/TopLevel/capture<a href="#section-4.1-17.2.1" class="pilcrow">¶</a></p>
@@ -1698,10 +1697,10 @@ and users of known security concerns specific to the idempotency keys.<a href="#
 <p id="section-5-2">Resources that do not implement strong idempotency keys, such as UUIDs, or have appropriate controls to validate the idempotency keys, could be victim to various forms of security attacks from malicious clients:<a href="#section-5-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-3.1">
-          <p id="section-5-3.1.1">Injection attacks - When the resources does not validate the idempotency key in the client request and performs a idempotent cache lookup, there can be security attacks (primarily in the form of injection), compromising the server.<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
+          <p id="section-5-3.1.1">Injection attacks - When the resource does not validate the idempotency key in the client request and performs an idempotent cache lookup, there can be security attacks (primarily in the form of injection), compromising the server.<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-3.2">
-          <p id="section-5-3.2.1">Data leaks-When an idempotency implementation allows low entropy keys, attackers <span class="bcp14">MAY</span> determine other keys and use them to fetch existing idempotent cache entries, belonging to other clients.<a href="#section-5-3.2.1" class="pilcrow">¶</a></p>
+          <p id="section-5-3.2.1">Data leaks - When an idempotency implementation allows low entropy keys, attackers <span class="bcp14">MAY</span> determine other keys and use them to fetch existing idempotent cache entries, belonging to other clients.<a href="#section-5-3.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-5-4">To prevent such situations, the specification recommends the following best practices for idempotency key implementation in the resource.<a href="#section-5-4" class="pilcrow">¶</a></p>
@@ -1729,7 +1728,7 @@ and users of known security concerns specific to the idempotency keys.<a href="#
 Idempotency-Key: "8e03978e-40d5-43e8-bc93-6894a57f9324"
 </pre><a href="#section-6-2" class="pilcrow">¶</a>
 </div>
-<p id="section-6-3">Second example shows an idempotency-key header field with key value using a random string generator:<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-3">The second example shows an idempotency-key header field with key value using a random string generator:<a href="#section-6-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6-4">
 <pre>
 Idempotency-Key: "clkyoesmbgybucifusbbtdsbohtyuuwz"
@@ -1751,10 +1750,6 @@ Idempotency-Key: "clkyoesmbgybucifusbbtdsbohtyuuwz"
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC5234">[RFC5234]</dt>
-        <dd>
-<span class="refAuthor">Crocker, D., Ed.</span> and <span class="refAuthor">P. Overell</span>, <span class="refTitle">"Augmented BNF for Syntax Specifications: ABNF"</span>, <span class="seriesInfo">STD 68</span>, <span class="seriesInfo">RFC 5234</span>, <span class="seriesInfo">DOI 10.17487/RFC5234</span>, <time datetime="2008-01" class="refDate">January 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5234">https://www.rfc-editor.org/rfc/rfc5234</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
         <dd>
