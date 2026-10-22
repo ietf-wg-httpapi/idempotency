@@ -1378,11 +1378,11 @@ The resource <span class="bcp14">SHOULD</span> process the request normally and 
 <p id="section-2.6-1.2.2">
 Retry<a href="#section-2.6-1.2.2" class="pilcrow">¶</a></p>
 <p id="section-2.6-1.2.3">
-The request was retried after the original request completed. The resource <span class="bcp14">SHOULD</span> respond with the result of the previously completed operation, success or an error. See Error Scenarios for details on errors.<a href="#section-2.6-1.2.3" class="pilcrow">¶</a></p>
+The request was retried after the original request completed. The resource <span class="bcp14">SHOULD</span> respond with a response consistent with the request being completed according to the user's intent.<a href="#section-2.6-1.2.3" class="pilcrow">¶</a></p>
 <p id="section-2.6-1.2.4">
 Concurrent Request<a href="#section-2.6-1.2.4" class="pilcrow">¶</a></p>
 <p id="section-2.6-1.2.5">
-The resource <span class="bcp14">SHOULD</span> respond with a response consistent with the request being completed according to the user's intent. See Error Scenarios for details.<a href="#section-2.6-1.2.5" class="pilcrow">¶</a></p>
+The request was retried before the original request completed. The resource <span class="bcp14">SHOULD</span> respond with a resource conflict error. See Error Scenarios for details.<a href="#section-2.6-1.2.5" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1794,12 +1794,24 @@ Idempotency-Key: "clkyoesmbgybucifusbbtdsbohtyuuwz"
       <h2 id="name-changes-from-draft-07">
 <a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-changes-from-draft-07" class="section-name selfRef">Changes from Draft-07</a>
       </h2>
-<p id="appendix-A-1">This revision has made the following changes:
-  * Updated references to obsoleted RFCs: RFC 7231 to RFC 9110, RFC 7807 to RFC 9457, RFC 4122 to RFC 9562 and RFC 8941 to RFC 9651
-  * Removed the unused ABNF and IMF-fixdate reference from Notational Conventions
-  * Adopted the proposed text for the Retry case (#48); still open for discussion
-  * Editorial fixes
-  * Added Dmitrii Tishkin as an author<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">This revision has made the following changes:<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A-2.1">
+          <p id="appendix-A-2.1.1">Updated references to obsoleted RFCs: RFC 7231 to RFC 9110, RFC 7807 to RFC 9457, RFC 4122 to RFC 9562 and RFC 8941 to RFC 9651<a href="#appendix-A-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-A-2.2">
+          <p id="appendix-A-2.2.1">Removed the unused ABNF and IMF-fixdate reference from Notational Conventions<a href="#appendix-A-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-A-2.3">
+          <p id="appendix-A-2.3.1">Adopted the proposed text for the Retry case (#48); still open for discussion<a href="#appendix-A-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-A-2.4">
+          <p id="appendix-A-2.4.1">Editorial fixes<a href="#appendix-A-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-A-2.5">
+          <p id="appendix-A-2.5.1">Added Dmitrii Tishkin as an author<a href="#appendix-A-2.5.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 </section>
 </div>
 <div id="acknowledgments">

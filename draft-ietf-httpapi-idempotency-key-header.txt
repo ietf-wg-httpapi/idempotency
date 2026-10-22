@@ -225,15 +225,14 @@ Table of Contents
       Retry
 
       The request was retried after the original request completed.  The
-      resource SHOULD respond with the result of the previously
-      completed operation, success or an error.  See Error Scenarios for
-      details on errors.
+      resource SHOULD respond with a response consistent with the
+      request being completed according to the user's intent.
 
       Concurrent Request
 
-      The resource SHOULD respond with a response consistent with the
-      request being completed according to the user's intent.  See Error
-      Scenarios for details.
+      The request was retried before the original request completed.
+      The resource SHOULD respond with a resource conflict error.  See
+      Error Scenarios for details.
 
 2.7.  Error Handling
 
@@ -585,12 +584,20 @@ Table of Contents
 
 Appendix A.  Changes from Draft-07
 
-   This revision has made the following changes: * Updated references to
-   obsoleted RFCs: RFC 7231 to RFC 9110, RFC 7807 to RFC 9457, RFC 4122
-   to RFC 9562 and RFC 8941 to RFC 9651 * Removed the unused ABNF and
-   IMF-fixdate reference from Notational Conventions * Adopted the
-   proposed text for the Retry case (#48); still open for discussion *
-   Editorial fixes * Added Dmitrii Tishkin as an author
+   This revision has made the following changes:
+
+   *  Updated references to obsoleted RFCs: RFC 7231 to RFC 9110, RFC
+      7807 to RFC 9457, RFC 4122 to RFC 9562 and RFC 8941 to RFC 9651
+
+   *  Removed the unused ABNF and IMF-fixdate reference from Notational
+      Conventions
+
+   *  Adopted the proposed text for the Retry case (#48); still open for
+      discussion
+
+   *  Editorial fixes
+
+   *  Added Dmitrii Tishkin as an author
 
 Acknowledgments
 
