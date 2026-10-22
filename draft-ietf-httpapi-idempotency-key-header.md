@@ -367,11 +367,12 @@ The second example shows an idempotency-key header field with key value using a 
 # Changes from Draft-07 {#changes}
 
 This revision has made the following changes:
-  * Updated references to obsoleted RFCs: RFC 7231 to RFC 9110, RFC 7807 to RFC 9457, RFC 4122 to RFC 9562 and RFC 8941 to RFC 9651
-  * Removed the unused ABNF and IMF-fixdate reference from Notational Conventions
-  * Adopted the proposed text for the Retry case (#48); still open for discussion
-  * Editorial fixes
-  * Added Dmitrii Tishkin as an author
+
+* Updated references to obsoleted RFCs: RFC 7231 to RFC 9110, RFC 7807 to RFC 9457, RFC 4122 to RFC 9562 and RFC 8941 to RFC 9651
+* Removed the unused ABNF and IMF-fixdate reference from Notational Conventions
+* Adopted the proposed text for the Retry case (#48); still open for discussion
+* Editorial fixes
+* Added Dmitrii Tishkin as an author
 
 # Acknowledgments
 {:numbered="false"}
