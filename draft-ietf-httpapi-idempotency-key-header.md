@@ -126,11 +126,11 @@ For each request, a server SHOULD:
 
   Retry
 
-  The request was retried after the original request completed. The resource SHOULD respond with the result of the previously completed operation, success or an error. See Error Scenarios for details on errors.
+  The request was retried after the original request completed. The resource SHOULD respond with a response consistent with the request being completed according to the user's intent.
 
   Concurrent Request
 
-  The resource SHOULD respond with a response consistent with the request being completed according to the user's intent. See Error Scenarios for details.
+  The request was retried before the original request completed. The resource SHOULD respond with a resource conflict error. See Error Scenarios for details.
 
 
 ## Error Handling
