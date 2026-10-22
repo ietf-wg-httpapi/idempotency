@@ -89,7 +89,7 @@ Table of Contents
    7.  References
      7.1.  Normative References
      7.2.  Informative References
-   Appendix A.  Changes from Draft-05
+   Appendix A.  Changes from Draft-07
    Acknowledgments
    Authors' Addresses
 
@@ -583,11 +583,14 @@ Table of Contents
               RFC 7942, DOI 10.17487/RFC7942, July 2016,
               <https://www.rfc-editor.org/rfc/rfc7942>.
 
-Appendix A.  Changes from Draft-05
+Appendix A.  Changes from Draft-07
 
-   This revision has made the following changes: * Added change log
-   starting from previous draft * Correction in introduction * Added an
-   implementer
+   This revision has made the following changes: * Updated references to
+   obsoleted RFCs: RFC 7231 to RFC 9110, RFC 7807 to RFC 9457, RFC 4122
+   to RFC 9562 and RFC 8941 to RFC 9651 * Removed the unused ABNF and
+   IMF-fixdate reference from Notational Conventions * Adopted the
+   proposed text for the Retry case (#48); still open for discussion *
+   Editorial fixes * Added Dmitrii Tishkin as an author
 
 Acknowledgments
 
