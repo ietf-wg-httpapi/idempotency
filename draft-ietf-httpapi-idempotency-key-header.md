@@ -84,13 +84,26 @@ The resource MAY require time based idempotency keys to be able to purge or dele
 
 ## Idempotency Fingerprint
 
-An idempotency fingerprint MAY be used in conjunction with an idempotency key to determine the uniqueness of a request. Such a fingerprint is generated from request payload data by the resource. An idempotency fingerprint generation algorithm MAY use one of the following or similar approaches to create a fingerprint.
+A resource MAY compute a fingerprint of the request payload and store it together with the idempotency key, in order to detect a key being reused with a different request. A resource that does so SHOULD document it.
+
+When a request arrives with an idempotency key that has been seen before, a resource that uses fingerprints handles it as follows:
+
+* If the fingerprint matches, the request is a duplicate and is handled as described in {{idempotency-enforcement}}.
+* If the fingerprint does not match, the resource fails the request as described in {{error-handling}} and does not return the result of the original request.
+
+A resource that does not use fingerprints cannot detect a key reused with a different payload, and handles such a request as a duplicate.
+
+Requests that carry different idempotency keys are distinct requests and are each processed, even if their fingerprints match.
+
+How the fingerprint is computed is up to the resource; for example:
 
 * Checksum of the entire request payload.
 * Checksum of selected element(s) in the request payload.
 * Field value match for each field in the request payload.
 * Field value match for selected element(s) in the request payload.
 * Request digest/signature.
+
+If the fingerprint covers only part of the payload, requests that differ only outside that part are treated as the same request.
 
 
 ## Responsibilities
@@ -116,7 +129,7 @@ For each request, a server SHOULD:
 * Enforce idempotency (see below)
 
 
-## Idempotency Enforcement
+## Idempotency Enforcement {#idempotency-enforcement}
 
 * First time request (idempotency key and fingerprint has not been seen)
 
@@ -133,7 +146,7 @@ For each request, a server SHOULD:
   The request was retried before the original request completed. The resource SHOULD respond with a resource conflict error. See Error Scenarios for details.
 
 
-## Error Handling
+## Error Handling {#error-handling}
 
 If the `Idempotency-Key` request header is missing for a documented idempotent operation requiring this header, the resource SHOULD reply with an HTTP `400` status code with body containing a link pointing to relevant documentation. The following example shows an error response describing the problem using {{!RFC9457}}.
 
