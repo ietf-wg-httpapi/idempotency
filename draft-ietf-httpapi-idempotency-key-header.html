@@ -1278,12 +1278,20 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-uniqueness-of-idempotency-k" class="section-name selfRef">Uniqueness of Idempotency Key</a>
         </h3>
 <p id="section-2.2-1">The idempotency key <span class="bcp14">MUST</span> be unique and <span class="bcp14">MUST NOT</span> be reused with another request with a different request payload.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.2-2">Uniqueness of the key <span class="bcp14">MUST</span> be defined by the resource owner and <span class="bcp14">MUST</span> be implemented by the clients of the resource. It is <span class="bcp14">RECOMMENDED</span> that a UUID <span>[<a href="#RFC9562" class="cite xref">RFC9562</a>]</span> or a similar random identifier be used as an idempotency key.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
-<p id="section-2.2-3">The following example shows an idempotency key whose value is a UUID <span>[<a href="#RFC9562" class="cite xref">RFC9562</a>]</span>:<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.2-2">An idempotency key is an opaque value. A resource <span class="bcp14">MAY</span> define what makes a key unique, and clients sending requests to that resource need to generate keys accordingly. Unless the resource defines otherwise, two keys are considered the same only if their values match exactly.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.2-3">For example, a resource could require keys that combine a tenant identifier with a request number that is unique within that tenant:<a href="#section-2.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-2.2-4">
 <pre>
-Idempotency-Key: "8e03978e-40d5-43e8-bc93-6894a57f9324"
+Idempotency-Key: "tenant-4821:1007"
 </pre><a href="#section-2.2-4" class="pilcrow">¶</a>
+</div>
+<p id="section-2.2-5">Such keys are predictable; see <a href="#security-considerations" class="auto internal xref">Section 5</a> for how a resource can prevent keys from being guessed.<a href="#section-2.2-5" class="pilcrow">¶</a></p>
+<p id="section-2.2-6">It is <span class="bcp14">RECOMMENDED</span> that a UUID <span>[<a href="#RFC9562" class="cite xref">RFC9562</a>]</span> or a similar random identifier be used as an idempotency key.<a href="#section-2.2-6" class="pilcrow">¶</a></p>
+<p id="section-2.2-7">The following example shows an idempotency key whose value is a UUID <span>[<a href="#RFC9562" class="cite xref">RFC9562</a>]</span>:<a href="#section-2.2-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.2-8">
+<pre>
+Idempotency-Key: "8e03978e-40d5-43e8-bc93-6894a57f9324"
+</pre><a href="#section-2.2-8" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
