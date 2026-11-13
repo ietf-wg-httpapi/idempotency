@@ -5,9 +5,9 @@
 Network Working Group                                            J. Jena
 Internet-Draft                                                          
 Intended status: Standards Track                                S. Dalal
-Expires: 25 April 2027                                                  
+Expires: 17 May 2027                                                    
                                                               D. Tishkin
-                                                         22 October 2026
+                                                        13 November 2026
 
 
                  The Idempotency-Key HTTP Header Field
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 April 2027.
+   This Internet-Draft will expire on 17 May 2027.
 
 Copyright Notice
 
@@ -162,11 +162,28 @@ Table of Contents
 
 2.4.  Idempotency Fingerprint
 
-   An idempotency fingerprint MAY be used in conjunction with an
-   idempotency key to determine the uniqueness of a request.  Such a
-   fingerprint is generated from request payload data by the resource.
-   An idempotency fingerprint generation algorithm MAY use one of the
-   following or similar approaches to create a fingerprint.
+   A resource MAY compute a fingerprint of the request payload and store
+   it together with the idempotency key, in order to detect a key being
+   reused with a different request.  A resource that does so SHOULD
+   document it.
+
+   When a request arrives with an idempotency key that has been seen
+   before, a resource that uses fingerprints handles it as follows:
+
+   *  If the fingerprint matches, the request is a duplicate and is
+      handled as described in Section 2.6.
+
+   *  If the fingerprint does not match, the resource fails the request
+      as described in Section 2.7 and does not return the result of the
+      original request.
+
+   A resource that does not use fingerprints cannot detect a key reused
+   with a different payload, and handles such a request as a duplicate.
+
+   Requests that carry different idempotency keys are distinct requests
+   and are each processed, even if their fingerprints match.
+
+   How the fingerprint is computed is up to the resource; for example:
 
    *  Checksum of the entire request payload.
 
@@ -177,6 +194,9 @@ Table of Contents
    *  Field value match for selected element(s) in the request payload.
 
    *  Request digest/signature.
+
+   If the fingerprint covers only part of the payload, requests that
+   differ only outside that part are treated as the same request.
 
 2.5.  Responsibilities
 
