@@ -120,7 +120,7 @@ For each request, a client SHOULD:
 
 ### Resource
 
-Resources MUST publish an idempotency-related specification. This specification MUST include expiration related policy if applicable. A resource is responsible for managing the lifecycle of the idempotency key.
+Resources SHOULD document their idempotency-related behavior, including any expiration policy. A resource is responsible for managing the lifecycle of the idempotency key.
 
 For each request, a server SHOULD:
 
