@@ -5,9 +5,9 @@
 Network Working Group                                            J. Jena
 Internet-Draft                                                          
 Intended status: Standards Track                                S. Dalal
-Expires: 17 May 2027                                                    
+Expires: 18 May 2027                                                    
                                                               D. Tishkin
-                                                        13 November 2026
+                                                        14 November 2026
 
 
                  The Idempotency-Key HTTP Header Field
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 May 2027.
+   This Internet-Draft will expire on 18 May 2027.
 
 Copyright Notice
 
@@ -655,4 +655,4 @@ Authors' Addresses
 
 
    Dmitrii Tishkin
-   Email: hello@dmi03.com
+   Email: me@dmi03.com
