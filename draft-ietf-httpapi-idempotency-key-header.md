@@ -30,7 +30,7 @@ author:
   -
     ins: D. Tishkin
     name: Dmitrii Tishkin
-    email: hello@dmi03.com
+    email: me@dmi03.com
 
 
 normative:
