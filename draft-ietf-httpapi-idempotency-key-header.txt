@@ -5,9 +5,9 @@
 Network Working Group                                            J. Jena
 Internet-Draft                                                          
 Intended status: Standards Track                                S. Dalal
-Expires: 18 May 2027                                                    
+Expires: 25 May 2027                                                    
                                                               D. Tishkin
-                                                        14 November 2026
+                                                        21 November 2026
 
 
                  The Idempotency-Key HTTP Header Field
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 May 2027.
+   This Internet-Draft will expire on 25 May 2027.
 
 Copyright Notice
 
@@ -89,7 +89,7 @@ Table of Contents
    7.  References
      7.1.  Normative References
      7.2.  Informative References
-   Appendix A.  Changes from Draft-07
+   Appendix A.  Changes from Draft-08
    Acknowledgments
    Authors' Addresses
 
@@ -613,22 +613,17 @@ Table of Contents
               RFC 7942, DOI 10.17487/RFC7942, July 2016,
               <https://www.rfc-editor.org/rfc/rfc7942>.
 
-Appendix A.  Changes from Draft-07
+Appendix A.  Changes from Draft-08
 
    This revision has made the following changes:
 
-   *  Updated references to obsoleted RFCs: RFC 7231 to RFC 9110, RFC
-      7807 to RFC 9457, RFC 4122 to RFC 9562 and RFC 8941 to RFC 9651
+   *  Clarified how resources define idempotency key uniqueness
 
-   *  Removed the unused ABNF and IMF-fixdate reference from Notational
-      Conventions
+   *  Relaxed the requirement to document idempotency behavior from MUST
+      to SHOULD
 
-   *  Adopted the proposed text for the Retry case (#48); still open for
-      discussion
-
-   *  Editorial fixes
-
-   *  Added Dmitrii Tishkin as an author
+   *  Clarified optional request fingerprints and duplicate-request
+      handling
 
 Acknowledgments
 
